@@ -35,17 +35,8 @@ async def restart_bots():
             try:
                 await client.join_chat(Mustjoin)
                 LOGGER("Userbot").info(f"📥 {me.first_name} joined {Mustjoin}")
-                await client.send_message(
-                    chat_id=Mustjoin,
-                    text=(
-                        "✅ Userbot is started\n"
-                        f"Name: {me.first_name}\n"
-                        f"Username: @{me.username if me.username else 'N/A'}\n"
-                        f"User ID: `{me.id}`"
-                    )
-                )
             except Exception as join_err:
-                LOGGER("Userbot").warning(f"⚠️ {me.first_name} failed to join/send in {Mustjoin}: {join_err}")
+                LOGGER("Userbot").warning(f"⚠️ {me.first_name} failed to join {Mustjoin}: {join_err}")
 
             userbot_clients.append(client)
 
