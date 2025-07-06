@@ -19,7 +19,7 @@ from pytz import timezone
 from datetime import datetime
 import base64
 from Superban.core.mongo import group_log_db
-from Superban.core.userbot import userbot_clients
+import Superban.core.userbot as userbot_module
 
 def get_readable_time(duration):
     seconds = int(duration.total_seconds())
@@ -226,8 +226,8 @@ async def super_ban_action(user_id, message, approval_author, reason):
                     await asyncio.sleep(4)
 
         await asyncio.gather(*[
-            send_custom_messages(userbot_clients[i], CLIENT_CHAT_DATA[i]["chat_ids"], CLIENT_CHAT_DATA[i]["messages"])
-            for i in range(len(userbot_clients))
+            send_custom_messages(userbot_module.userbot_clients[i], CLIENT_CHAT_DATA[i]["chat_ids"], CLIENT_CHAT_DATA[i]["messages"])
+            for i in range(len(userbot_module.userbot_clients))
         ])
 
         end_time = datetime.utcnow()
