@@ -21,7 +21,7 @@ import base64
 from Superban.core.mongo import group_log_db
 import Superban.core.userbot as userbot_module
 from Superban.core.readable_time import get_readable_time
-from Superban.clone.chat_tracker import verify_all_groups_from_db
+from Superban.core.chat_tracker import verify_all_groups_from_db
 
 reason_storage = {}
 next_reason_id = 1
