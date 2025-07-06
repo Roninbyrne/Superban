@@ -216,7 +216,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
                     continue
                 try:
                     starter_msg = f"⚠️ Starting Superban on [{user.first_name}](tg://user?id={user.id}) in this chat."
-                    await client.send_message(chat_id, starter_msg)
+                    await app.send_message(chat_id, starter_msg)
                     await asyncio.sleep(2)
                 except Exception as e:
                     logging.warning(f"[BOT {bot_index}] Failed to send starter message to {chat_id}: {e}")
