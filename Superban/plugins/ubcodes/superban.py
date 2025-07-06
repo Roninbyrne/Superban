@@ -126,10 +126,10 @@ async def super_ban(_, message):
     )
     await message.delete()
 
-@app.on_callback_query(filters.regex(r'^Super_Ban_(approve|decline)(\d+)(.+)$'))
+@app.on_callback_query(filters.regex(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$'))
 async def handle_super_ban_callback(client: Client, query: CallbackQuery):
     try:
-        status, user_id_str, encoded_reason = query.data.split("_")[2:]
+        _, action, user_id_str, encoded_reason = query.data.split("_", 3)
         user_id = int(user_id_str)
         reason_id = base64.b64decode(encoded_reason).decode()
         reason = reason_storage.get(int(reason_id), "No reason provided")
@@ -146,7 +146,7 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
     approval_author = query.from_user.first_name
 
     try:
-        if status == "approve":
+        if action == "approve":
             await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ.", show_alert=True)
             asyncio.create_task(super_ban_action(user_id, query.message, approval_author, reason))
 
@@ -168,7 +168,7 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
             await query.message.delete()
             await notification_message.delete()
 
-        elif status == "decline":
+        elif action == "decline":
             await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ.", show_alert=True)
             await query.message.edit(
                 SUPERBAN_DECLINED_TEMPLATE.format(
