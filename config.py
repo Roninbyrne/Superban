@@ -110,7 +110,7 @@ OWNER_ID = 7394132959
 CLIENT_CHAT_DATA = [
     {
         "session": String_client_1,
-        "chat_ids": [-1001111111111, -1001111111112],
+        "chat_ids": [-1002746914942],
         "messages": [
             "/Joinfed 1111-aaaa",
             "/fban {user_id} {reason} \n\nApproved by {approver} \nTime: {utc_time}"
