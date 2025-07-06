@@ -37,7 +37,7 @@ SUPERBAN_REQUEST_TEMPLATE = """ᴀᴘᴘʀᴏᴠᴇ sᴜᴘᴇʀʙᴀɴ ꜰᴏʀ
 ᴅᴀᴛᴇ & ᴛɪᴍᴇ : {ind_time}
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
 
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @AronaYbot"""
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
 
 SUPERBAN_REQUEST_RESPONSE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴇɴᴅᴇᴅ ᴛᴏ ᴛᴇᴀᴍ
 
@@ -51,8 +51,8 @@ SUPERBAN_REQUEST_RESPONSE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ
 ᴛʜᴀɴᴋꜜs ꜰᴏʀ ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ
 
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
-ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @TeamArona
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @AronaYbot"""
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @SuperbanTeam
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
 
 SUPERBAN_APPROVED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ᴀᴘᴘʀᴏᴠᴇᴅ, ɴᴏᴡ ꜱᴛᴀʀᴛɪɴɢ sᴜᴘᴇʀʙᴀɴ.....
 
@@ -63,8 +63,7 @@ SUPERBAN_APPROVED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱ�
 ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ ᴀᴜᴛʜᴏʀ : {approval_author}
 
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
-ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @TeamArona
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @AronaYbot"""
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
 
 SUPERBAN_DECLINED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ᴅᴇᴄʟɪɴᴇᴅ
 
@@ -75,8 +74,7 @@ SUPERBAN_DECLINED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱ�
 ᴅᴇᴄʟɪɴᴇᴅ ʙʏ ᴀᴜᴛʜᴏʀ : {approval_author}
 
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
-ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @TeamArona
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @AronaYbot"""
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
 
 SUPERBAN_COMPLETE_TEMPLATE = """sᴜᴘᴇʀʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ.
 
@@ -91,8 +89,8 @@ SUPERBAN_COMPLETE_TEMPLATE = """sᴜᴘᴇʀʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟᴇᴛ�
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
 ᴛɪᴍᴇ ᴛᴀᴋᴇɴ : {time_taken}
 
-ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @Team
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @AronaYbot"""
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @SuperbanTeam
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
 
 #--------------------------------
 START_VIDEO = "https://i.ibb.co/nsyp67FS/Img2url-bot.jpg"
