@@ -200,18 +200,20 @@ async def send_message_with_semaphore(client, chat_id, msg):
 async def super_ban_action(user_id, message, approval_author, reason):
     try:
         await verify_all_groups_from_db(app)
-
         user = await app.get_users(user_id)
         number_of_chats = 0
         start_time = datetime.utcnow()
 
+        verified_chat_ids = set()
+        async for doc in group_log_db.find({}):
+            verified_chat_ids.add(doc["_id"])
+
         async def send_custom_messages(client, chat_ids, message_templates, bot_index):
             nonlocal number_of_chats
-            valid_chat_ids = []
             for chat_id in chat_ids:
-                if await group_log_db.find_one({"_id": chat_id}):
-                    valid_chat_ids.append(chat_id)
-            for chat_id in valid_chat_ids:
+                if chat_id not in verified_chat_ids:
+                    logging.warning(f"[BOT {bot_index}] Skipped invalid chat {chat_id}")
+                    continue
                 for template in message_templates:
                     try:
                         msg = template.format(
@@ -228,7 +230,12 @@ async def super_ban_action(user_id, message, approval_author, reason):
                         logging.error(f"[BOT {bot_index}] Error sending to {chat_id}: {e}")
 
         await asyncio.gather(*[
-            send_custom_messages(userbot_module.userbot_clients[i], CLIENT_CHAT_DATA[i]["chat_ids"], CLIENT_CHAT_DATA[i]["messages"], i + 1)
+            send_custom_messages(
+                userbot_module.userbot_clients[i],
+                CLIENT_CHAT_DATA[i]["chat_ids"],
+                CLIENT_CHAT_DATA[i]["messages"],
+                i + 1
+            )
             for i in range(len(userbot_module.userbot_clients))
         ])
 
