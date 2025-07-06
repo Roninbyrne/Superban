@@ -105,11 +105,44 @@ HELP_VIDEO_2 = "https://i.ibb.co/S7Z4fHJt/Img2url-bot.jpg"
 HELP_VIDEO_3 = "https://unitedcamps.in/Images/file_11453.jpg"
 HELP_VIDEO_4 = "https://unitedcamps.in/Images/file_11454.jpg"
 
-#------------------------------------
+#------------------------------------#
+
 RECORD_CHAT_ID = -1002059639505
 LOGGER_ID = -1002059639505
 STATS_VIDEO = "https://unitedcamps.in/Images/file_5250.jpg"
 OWNER_ID = 7394132959
+
+
+# --------------clint-superban-message-------------
+
+CLIENT_CHAT_DATA = [
+    {
+        "session": String_client_1,
+        "chat_ids": [-1001111111111, -1001111111112],
+        "messages": [
+            "/Joinfed 1111-aaaa",
+            "/fban {user_id} {reason} \n\nApproved by {approver} \nTime: {utc_time}"
+        ]
+    },
+    {
+        "session": String_client_2,
+        "chat_ids": [-1002222222222],
+        "messages": [
+            "/Joinfed 2222-bbbb",
+            "/fban {user_id} Reason: {reason} \n\nDone by {approver}"
+        ]
+    },
+    {
+        "session": String_client_3,
+        "chat_ids": [-1003333333333],
+        "messages": [
+            "/Joinfed 3333-cccc",
+            "Ban user {user_id} - Reason: {reason} - By: {approver}"
+        ]
+    },
+]
+
+
 
 # Heroku deployment
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
