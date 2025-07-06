@@ -9,7 +9,10 @@ from config import (
     SUPERBAN_APPROVED_TEMPLATE,
     SUPERBAN_DECLINED_TEMPLATE,
     SUPERBAN_COMPLETE_TEMPLATE,
-    CLIENT_CHAT_DATA
+    CLIENT_CHAT_DATA,
+    SUPERBAN_CHAT_ID,
+    STORAGE_CHANNEL_ID,
+    AUTHORS
 )
 from pyrogram.errors import FloodWait
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
@@ -27,10 +30,6 @@ def store_reason(reason):
     reason_storage[reason_id] = reason
     next_reason_id += 1
     return reason_id
-
-AUTHORS = [7337748194, 7202110938, 7512713188, 1813320767]
-SUPPORT_CHAT_ID = -1002408883218
-SUPPORT_CHANNEL_ID = -1002059806687
 
 async def get_user_id(user_query):
     try:
@@ -61,7 +60,7 @@ async def send_request_message(user, reason, action, message):
     encoded_reason = base64.b64encode(str(reason_id).encode()).decode() if reason_id else ""
 
     request_message = await app.send_message(
-        SUPPORT_CHAT_ID,
+        SUPERBAN_CHAT_ID,
         SUPERBAN_REQUEST_TEMPLATE.format(
             user_first=user.first_name,
             user_id=user.id,
@@ -149,7 +148,7 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                 )
             )
-            notification_message = await app.send_message(SUPPORT_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
+            notification_message = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
             await notification_message.delete()
@@ -164,7 +163,7 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                 )
             )
-            notification_message = await app.send_message(SUPPORT_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
+            notification_message = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
             await notification_message.delete()
@@ -224,7 +223,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
         time_taken = end_time - start_time
         readable_time = get_readable_time(time_taken)
 
-        await app.send_message(SUPPORT_CHANNEL_ID,
+        await app.send_message(STORAGE_CHANNEL_ID,
             SUPERBAN_COMPLETE_TEMPLATE.format(
                 user_first=user.first_name,
                 user_id=user.id,
@@ -235,7 +234,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
                 time_taken=readable_time,
             )
         )
-        await app.send_message(SUPPORT_CHAT_ID,
+        await app.send_message(SUPERBAN_CHAT_ID,
             SUPERBAN_COMPLETE_TEMPLATE.format(
                 user_first=user.first_name,
                 user_id=user.id,
