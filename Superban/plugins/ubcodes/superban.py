@@ -262,11 +262,3 @@ async def super_ban_action(user_id, message, approval_author, reason):
             logging.warning(f"Could not pin final completion message: {e}")
     except Exception as e:
         logging.error(f"Error during superban action: {e}")
-
-if __name__ == "__main__":
-    try:
-        app.run()
-    except Exception as e:
-        logging.error(f"An error occurred: {e}")
-    finally:
-        app.stop()
