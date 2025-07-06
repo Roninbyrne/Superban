@@ -22,6 +22,79 @@ String_client_2 = ""
 String_client_3 = ""
 Mustjoin = "Phoenix_HLP"
 
+# ------------superban-template------------
+
+SUPERBAN_REQUEST_TEMPLATE = """ᴀᴘᴘʀᴏᴠᴇ sᴜᴘᴇʀʙᴀɴ ꜰᴏʀ ᴜꜱᴇʀ :
+{user_first}
+ᴜꜱᴇʀ ɪᴅ : {user_id}
+
+ʀᴇQᴜᴇꜱᴛ ꜰʀᴏᴍ ᴄʜᴀᴛ ɪᴅ : {chat_id}
+ʀᴇQᴜᴇꜱᴛ ꜰʀᴏᴍ ᴄʜᴀᴛ ɴᴀᴍᴇ : {chat_name}
+
+ʀᴇᴀꜱᴏɴ : {reason}
+ʀᴇQᴜᴇꜱᴛ ʙʏ : {request_by}
+
+ᴅᴀᴛᴇ & ᴛɪᴍᴇ : {ind_time}
+ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
+
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @AronaYbot"""
+
+SUPERBAN_REQUEST_RESPONSE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴇɴᴅᴇᴅ ᴛᴏ ᴛᴇᴀᴍ
+
+ʀᴇQᴜᴇꜱᴛ ᴛᴏ sᴜᴘᴇʀʙᴀɴ
+ᴜꜱᴇʀ : {user_first}
+
+ʀᴇᴀꜱᴏɴ : {reason}
+ʀᴇQᴜᴇꜱᴛ ʙʏ : {request_by}
+
+ʏᴏᴜʀ ʀᴇQᴜᴇꜱᴛ ᴡɪʟʟ ʙᴇ ᴄʜᴇᴄᴋᴇᴅ ᴀɴᴅ ɪꜰ ɪᴛ'ꜱ ɢᴇɴᴜɪɴ ᴛʜᴇɴ ʙᴇ ꜱᴜʀᴇ ɪᴛ ᴡɪʟʟ ʙᴇ ᴀᴘᴘʀᴏᴠᴇᴅ.
+ᴛʜᴀɴᴋꜜs ꜰᴏʀ ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ
+
+ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @TeamArona
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @AronaYbot"""
+
+SUPERBAN_APPROVED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ᴀᴘᴘʀᴏᴠᴇᴅ, ɴᴏᴡ ꜱᴛᴀʀᴛɪɴɢ sᴜᴘᴇʀʙᴀɴ.....
+
+ʀᴇQᴜᴇꜱᴛ ᴛᴏ sᴜᴘᴇʀʙᴀɴ
+ᴜꜱᴇʀ : {user_first}
+
+ʀᴇᴀꜱᴏɴ : {reason}
+ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ ᴀᴜᴛʜᴏʀ : {approval_author}
+
+ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @TeamArona
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @AronaYbot"""
+
+SUPERBAN_DECLINED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ᴅᴇᴄʟɪɴᴇᴅ 
+
+ʀᴇQᴜᴇꜱᴛ ᴛᴏ sᴜᴘᴇʀʙᴀɴ
+ᴜꜱᴇʀ : {user_first}
+
+ʀᴇᴀꜱᴏɴ : {reason}
+ᴅᴇᴄʟɪɴᴇᴅ ʙʏ ᴀᴜᴛʜᴏʀ : {approval_author}
+
+ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @TeamArona
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @AronaYbot"""
+
+SUPERBAN_COMPLETE_TEMPLATE = """
+sᴜᴘᴇʀʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ.
+
+ᴜꜱᴇʀ : {user_first}
+ᴜꜱᴇʀ ɪᴅ : {user_id}
+
+ʀᴇᴀꜱᴏɴ : {reason}
+ᴛᴏᴛᴀʟ ʙᴀɴ ɪɴ ꜰᴇᴅꜱ : {fed_count}
+
+ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ : {approval_author}
+
+ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
+ᴛɪᴍᴇ ᴛᴀᴋᴇɴ : {time_taken}
+
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @Team
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @AronaYbot"""
+
 
 # --------------start.py-------------
 
