@@ -4,7 +4,7 @@ import asyncio
 import re
 import logging
 from config import (
-    API_ID, API_HASH, SUPERBAN_REQUEST_TEMPLATE,
+    SUPERBAN_REQUEST_TEMPLATE,
     SUPERBAN_REQUEST_RESPONSE,
     SUPERBAN_APPROVED_TEMPLATE,
     SUPERBAN_DECLINED_TEMPLATE,
@@ -14,12 +14,12 @@ from config import (
     STORAGE_CHANNEL_ID,
     AUTHORS
 )
-from pyrogram.errors import FloodWait
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from pytz import timezone
-from datetime import timedelta, datetime
+from datetime import datetime
 import base64
 from Superban.core.mongo import group_log_db
+from Superban.core.userbot import userbot_clients
 
 def get_readable_time(duration):
     seconds = int(duration.total_seconds())
@@ -207,21 +207,6 @@ async def super_ban_action(user_id, message, approval_author, reason):
         number_of_chats = 0
         start_time = datetime.utcnow()
 
-        async def start_client(index, session_string):
-            client = Client(
-                name=f"userbot_{index}",
-                api_id=API_ID,
-                api_hash=API_HASH,
-                session_string=session_string,
-                plugins={"root": "Superban.plugins.userbot"},
-            )
-            await client.start()
-            return client
-
-        clients = await asyncio.gather(
-            *[start_client(i + 1, data["session"]) for i, data in enumerate(CLIENT_CHAT_DATA) if data["session"]]
-        )
-
         async def send_custom_messages(client, chat_ids, message_templates):
             nonlocal number_of_chats
             valid_chat_ids = []
@@ -241,8 +226,8 @@ async def super_ban_action(user_id, message, approval_author, reason):
                     await asyncio.sleep(4)
 
         await asyncio.gather(*[
-            send_custom_messages(clients[i], CLIENT_CHAT_DATA[i]["chat_ids"], CLIENT_CHAT_DATA[i]["messages"])
-            for i in range(len(clients))
+            send_custom_messages(userbot_clients[i], CLIENT_CHAT_DATA[i]["chat_ids"], CLIENT_CHAT_DATA[i]["messages"])
+            for i in range(len(userbot_clients))
         ])
 
         end_time = datetime.utcnow()
