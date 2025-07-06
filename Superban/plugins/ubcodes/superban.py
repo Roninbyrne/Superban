@@ -148,6 +148,11 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                 )
             )
+            try:
+                await query.message.pin(disable_notification=True)
+            except Exception as e:
+                logging.warning(f"Could not pin approved message: {e}")
+
             notification_message = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
@@ -163,6 +168,11 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                 )
             )
+            try:
+                await query.message.pin(disable_notification=True)
+            except Exception as e:
+                logging.warning(f"Could not pin declined message: {e}")
+
             notification_message = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
@@ -234,7 +244,8 @@ async def super_ban_action(user_id, message, approval_author, reason):
                 time_taken=readable_time,
             )
         )
-        await app.send_message(SUPERBAN_CHAT_ID,
+
+        final_msg = await app.send_message(SUPERBAN_CHAT_ID,
             SUPERBAN_COMPLETE_TEMPLATE.format(
                 user_first=user.first_name,
                 user_id=user.id,
@@ -243,9 +254,12 @@ async def super_ban_action(user_id, message, approval_author, reason):
                 approval_author=approval_author,
                 utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
                 time_taken=readable_time,
-            ),
-            pin=True
+            )
         )
+        try:
+            await final_msg.pin(disable_notification=True)
+        except Exception as e:
+            logging.warning(f"Could not pin final completion message: {e}")
     except Exception as e:
         logging.error(f"Error during superban action: {e}")
 
