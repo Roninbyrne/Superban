@@ -71,7 +71,7 @@ async def send_request_message(user, reason, action, message):
     utc_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
     encoded_reason = base64.b64encode(str(reason_id).encode()).decode() if reason_id else ""
 
-    request_message = await app.send_message(
+    return await app.send_message(
         SUPERBAN_CHAT_ID,
         SUPERBAN_REQUEST_TEMPLATE.format(
             user_first=user.first_name,
@@ -88,7 +88,6 @@ async def send_request_message(user, reason, action, message):
             [InlineKeyboardButton("✯ ᴅᴇᴄʟɪɴᴇ ✯", callback_data=f"{action}_decline_{user.id}_{encoded_reason}")]
         ])
     )
-    return request_message
 
 @Client.on_message(filters.command(["superban"], prefixes=["."]) & (filters.group | filters.channel | filters.private) & filters.me)
 async def super_ban(_, message):
@@ -164,12 +163,12 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
             )
             try:
                 await query.message.pin(disable_notification=True)
-            except Exception as e:
-                logging.warning(f"Could not pin approved message: {e}")
-            notification_message = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
+            except Exception:
+                pass
+            note = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
-            await notification_message.delete()
+            await note.delete()
         elif action == "decline":
             await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ.", show_alert=True)
             await query.message.edit(
@@ -182,12 +181,12 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
             )
             try:
                 await query.message.pin(disable_notification=True)
-            except Exception as e:
-                logging.warning(f"Could not pin declined message: {e}")
-            notification_message = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
+            except Exception:
+                pass
+            note = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
-            await notification_message.delete()
+            await note.delete()
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
         await query.answer("An unexpected error occurred. Please try again.", show_alert=True)
@@ -218,7 +217,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
             nonlocal number_of_chats
             valid_chat_ids = []
             for chat_id in chat_ids:
-                if await group_log_db.find_one({"chat_id": chat_id}):
+                if await group_log_db.find_one({"_id": chat_id}):
                     valid_chat_ids.append(chat_id)
                 else:
                     logging.warning(f"[BOT {bot_index}] Skipped chat {chat_id} not in DB")
@@ -246,7 +245,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
         end_time = datetime.utcnow()
         readable_time = get_readable_time(end_time - start_time)
 
-        if await group_log_db.find_one({"chat_id": STORAGE_CHANNEL_ID}):
+        if await group_log_db.find_one({"_id": STORAGE_CHANNEL_ID}):
             await app.send_message(STORAGE_CHANNEL_ID,
                 SUPERBAN_COMPLETE_TEMPLATE.format(
                     user_first=user.first_name,
@@ -259,7 +258,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
                 )
             )
 
-        if await group_log_db.find_one({"chat_id": SUPERBAN_CHAT_ID}):
+        if await group_log_db.find_one({"_id": SUPERBAN_CHAT_ID}):
             final_msg = await app.send_message(SUPERBAN_CHAT_ID,
                 SUPERBAN_COMPLETE_TEMPLATE.format(
                     user_first=user.first_name,
@@ -273,7 +272,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
             )
             try:
                 await final_msg.pin(disable_notification=True)
-            except Exception as e:
-                logging.warning(f"Could not pin final completion message: {e}")
+            except Exception:
+                pass
     except Exception as e:
         logging.error(f"Error during superban action: {e}")
