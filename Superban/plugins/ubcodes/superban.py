@@ -21,6 +21,7 @@ import base64
 from Superban.core.mongo import group_log_db
 import Superban.core.userbot as userbot_module
 from Superban.core.readable_time import get_readable_time
+from Superban.clone.chat_tracker import verify_all_groups_from_db
 
 reason_storage = {}
 next_reason_id = 1
@@ -198,6 +199,8 @@ async def send_message_with_semaphore(client, chat_id, msg):
 
 async def super_ban_action(user_id, message, approval_author, reason):
     try:
+        await verify_all_groups_from_db(app)
+
         user = await app.get_users(user_id)
         number_of_chats = 0
         start_time = datetime.utcnow()
@@ -208,8 +211,6 @@ async def super_ban_action(user_id, message, approval_author, reason):
             for chat_id in chat_ids:
                 if await group_log_db.find_one({"_id": chat_id}):
                     valid_chat_ids.append(chat_id)
-                else:
-                    logging.warning(f"[BOT {bot_index}] Skipped chat {chat_id} not in DB")
             for chat_id in valid_chat_ids:
                 for template in message_templates:
                     try:
