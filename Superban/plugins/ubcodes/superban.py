@@ -170,7 +170,6 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
             await asyncio.sleep(10)
             await query.message.delete()
             await notification_message.delete()
-
         elif action == "decline":
             await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ.", show_alert=True)
             await query.message.edit(
@@ -189,7 +188,6 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
             await asyncio.sleep(10)
             await query.message.delete()
             await notification_message.delete()
-
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
         await query.answer("An unexpected error occurred. Please try again.", show_alert=True)
@@ -198,8 +196,17 @@ semaphore = asyncio.Semaphore(2)
 
 async def send_message_with_semaphore(client, chat_id, msg):
     async with semaphore:
-        result = await retry_operation(client.send_message, chat_id, msg)
-        return result is not None
+        try:
+            logging.info(f"[SEND] Trying to send to {chat_id}: {msg}")
+            result = await retry_operation(client.send_message, chat_id, msg)
+            if result:
+                logging.info(f"[SUCCESS] Sent to {chat_id}")
+            else:
+                logging.warning(f"[FAILED] Could not send to {chat_id}")
+            return result is not None
+        except Exception as e:
+            logging.error(f"[ERROR] send_message_with_semaphore to {chat_id}: {e}")
+            return False
 
 async def super_ban_action(user_id, message, approval_author, reason):
     try:
@@ -207,26 +214,32 @@ async def super_ban_action(user_id, message, approval_author, reason):
         number_of_chats = 0
         start_time = datetime.utcnow()
 
-        async def send_custom_messages(client, chat_ids, message_templates):
+        async def send_custom_messages(client, chat_ids, message_templates, bot_index):
             nonlocal number_of_chats
             valid_chat_ids = []
             for chat_id in chat_ids:
                 if await group_log_db.find_one({"chat_id": chat_id}):
                     valid_chat_ids.append(chat_id)
+                else:
+                    logging.warning(f"[BOT {bot_index}] Skipped chat {chat_id} not in DB")
             for chat_id in valid_chat_ids:
                 for template in message_templates:
-                    msg = template.format(
-                        user_id=user.id,
-                        reason=reason,
-                        approver=approval_author,
-                        utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-                    )
-                    if await send_message_with_semaphore(client, chat_id, msg):
-                        number_of_chats += 1
-                    await asyncio.sleep(4)
+                    try:
+                        msg = template.format(
+                            user_id=user.id,
+                            reason=reason,
+                            approver=approval_author,
+                            utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                        )
+                        logging.info(f"[BOT {bot_index}] Sending to {chat_id}: {msg}")
+                        if await send_message_with_semaphore(client, chat_id, msg):
+                            number_of_chats += 1
+                        await asyncio.sleep(4)
+                    except Exception as e:
+                        logging.error(f"[BOT {bot_index}] Error sending to {chat_id}: {e}")
 
         await asyncio.gather(*[
-            send_custom_messages(userbot_module.userbot_clients[i], CLIENT_CHAT_DATA[i]["chat_ids"], CLIENT_CHAT_DATA[i]["messages"])
+            send_custom_messages(userbot_module.userbot_clients[i], CLIENT_CHAT_DATA[i]["chat_ids"], CLIENT_CHAT_DATA[i]["messages"], i + 1)
             for i in range(len(userbot_module.userbot_clients))
         ])
 
