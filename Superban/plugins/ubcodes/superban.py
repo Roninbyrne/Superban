@@ -19,6 +19,7 @@ from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, 
 from pytz import timezone
 from datetime import timedelta, datetime
 import base64
+from Superban.core.mongo import group_log_db
 
 def get_readable_time(duration):
     seconds = int(duration.total_seconds())
@@ -130,7 +131,6 @@ async def super_ban(_, message):
 @app.on_callback_query(filters.regex(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$'))
 async def handle_super_ban_callback(client: Client, query: CallbackQuery):
     try:
-        import re
         match = re.match(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$', query.data)
         if not match:
             raise ValueError("Invalid callback data format")
@@ -154,7 +154,6 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
         if action == "approve":
             await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ.", show_alert=True)
             asyncio.create_task(super_ban_action(user_id, query.message, approval_author, reason))
-
             await query.message.edit(
                 SUPERBAN_APPROVED_TEMPLATE.format(
                     user_first=user.first_name,
@@ -167,7 +166,6 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                 await query.message.pin(disable_notification=True)
             except Exception as e:
                 logging.warning(f"Could not pin approved message: {e}")
-
             notification_message = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
@@ -187,7 +185,6 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                 await query.message.pin(disable_notification=True)
             except Exception as e:
                 logging.warning(f"Could not pin declined message: {e}")
-
             notification_message = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
@@ -227,7 +224,11 @@ async def super_ban_action(user_id, message, approval_author, reason):
 
         async def send_custom_messages(client, chat_ids, message_templates):
             nonlocal number_of_chats
+            valid_chat_ids = []
             for chat_id in chat_ids:
+                if await group_log_db.find_one({"chat_id": chat_id}):
+                    valid_chat_ids.append(chat_id)
+            for chat_id in valid_chat_ids:
                 for template in message_templates:
                     msg = template.format(
                         user_id=user.id,
