@@ -128,10 +128,10 @@ async def super_ban(_, message):
     )
     await message.delete()
 
-@app.on_callback_query(filters.regex(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$'))
+@app.on_callback_query(filters.regex(r'^Super_Ban_(approve|decline)(\d+)(.+)$'))
 async def handle_super_ban_callback(client: Client, query: CallbackQuery):
     try:
-        match = re.match(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$', query.data)
+        match = re.match(r'^Super_Ban_(approve|decline)(\d+)(.+)$', query.data)
         if not match:
             raise ValueError("Invalid callback data format")
         action, user_id_str, encoded_reason = match.groups()
@@ -246,35 +246,36 @@ async def super_ban_action(user_id, message, approval_author, reason):
         ])
 
         end_time = datetime.utcnow()
-        time_taken = end_time - start_time
-        readable_time = get_readable_time(time_taken)
+        readable_time = get_readable_time(end_time - start_time)
 
-        await app.send_message(STORAGE_CHANNEL_ID,
-            SUPERBAN_COMPLETE_TEMPLATE.format(
-                user_first=user.first_name,
-                user_id=user.id,
-                reason=reason,
-                fed_count=number_of_chats,
-                approval_author=approval_author,
-                utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
-                time_taken=readable_time,
+        if await group_log_db.find_one({"chat_id": STORAGE_CHANNEL_ID}):
+            await app.send_message(STORAGE_CHANNEL_ID,
+                SUPERBAN_COMPLETE_TEMPLATE.format(
+                    user_first=user.first_name,
+                    user_id=user.id,
+                    reason=reason,
+                    fed_count=number_of_chats,
+                    approval_author=approval_author,
+                    utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    time_taken=readable_time,
+                )
             )
-        )
 
-        final_msg = await app.send_message(SUPERBAN_CHAT_ID,
-            SUPERBAN_COMPLETE_TEMPLATE.format(
-                user_first=user.first_name,
-                user_id=user.id,
-                reason=reason,
-                fed_count=number_of_chats,
-                approval_author=approval_author,
-                utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
-                time_taken=readable_time,
+        if await group_log_db.find_one({"chat_id": SUPERBAN_CHAT_ID}):
+            final_msg = await app.send_message(SUPERBAN_CHAT_ID,
+                SUPERBAN_COMPLETE_TEMPLATE.format(
+                    user_first=user.first_name,
+                    user_id=user.id,
+                    reason=reason,
+                    fed_count=number_of_chats,
+                    approval_author=approval_author,
+                    utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    time_taken=readable_time,
+                )
             )
-        )
-        try:
-            await final_msg.pin(disable_notification=True)
-        except Exception as e:
-            logging.warning(f"Could not pin final completion message: {e}")
+            try:
+                await final_msg.pin(disable_notification=True)
+            except Exception as e:
+                logging.warning(f"Could not pin final completion message: {e}")
     except Exception as e:
         logging.error(f"Error during superban action: {e}")
