@@ -1,6 +1,7 @@
 from pyrogram import Client, filters
 from Superban import app
 import asyncio
+import re
 import logging
 from config import (
     API_ID, API_HASH, SUPERBAN_REQUEST_TEMPLATE,
@@ -129,7 +130,11 @@ async def super_ban(_, message):
 @app.on_callback_query(filters.regex(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$'))
 async def handle_super_ban_callback(client: Client, query: CallbackQuery):
     try:
-        _, action, user_id_str, encoded_reason = query.data.split("_", 3)
+        import re
+        match = re.match(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$', query.data)
+        if not match:
+            raise ValueError("Invalid callback data format")
+        action, user_id_str, encoded_reason = match.groups()
         user_id = int(user_id_str)
         reason_id = base64.b64decode(encoded_reason).decode()
         reason = reason_storage.get(int(reason_id), "No reason provided")
