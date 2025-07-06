@@ -9,7 +9,7 @@ from config import (
     SUPERBAN_APPROVED_TEMPLATE,
     SUPERBAN_DECLINED_TEMPLATE,
     SUPERBAN_COMPLETE_TEMPLATE,
-    String_client_1, String_client_2, String_client_3
+    CLIENT_CHAT_DATA
 )
 from pyrogram.errors import FloodWait
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
@@ -31,16 +31,6 @@ def store_reason(reason):
 AUTHORS = [7337748194, 7202110938, 7512713188, 1813320767]
 SUPPORT_CHAT_ID = -1002408883218
 SUPPORT_CHANNEL_ID = -1002059806687
-
-SPECIFIC_CHAT_IDS = [
-    -1002390573482,
-    -1002454747325,
-    -1002165698624,
-    -1002302258143,
-    -1002320242726
-]
-
-STRING_SESSIONS = [String_client_1, String_client_2, String_client_3]
 
 async def get_user_id(user_query):
     try:
@@ -196,34 +186,39 @@ async def super_ban_action(user_id, message, approval_author, reason):
         number_of_chats = 0
         start_time = datetime.utcnow()
 
-        messages = [
-            f"/Joinfed 5a94ee24-29bb-492e-b707-4d5ad2e65bec",
-            f"/Joinfed d1e0c43c-21e8-4052-a7a6-5498e4cd63e5",
-            f"/fban {user_id} {reason} \n\nᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author} \n\nᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} \n\nʙᴀɴ ᴀᴘᴘᴇᴀʟ: @Emxes_Appeal \nᴘᴏᴡᴇʀᴇᴅ ʙʏ: @TeamArona"
-        ]
-
-        async def start_client(index, string_token):
+        async def start_client(index, session_string):
             client = Client(
                 name=f"userbot_{index}",
                 api_id=API_ID,
                 api_hash=API_HASH,
-                session_string=string_token,
+                session_string=session_string,
                 plugins={"root": "Superban.plugins.userbot"},
             )
             await client.start()
             return client
 
-        clients = await asyncio.gather(*(start_client(i + 1, s) for i, s in enumerate(STRING_SESSIONS) if s))
+        clients = await asyncio.gather(
+            *[start_client(i + 1, data["session"]) for i, data in enumerate(CLIENT_CHAT_DATA) if data["session"]]
+        )
 
-        async def send_messages(client):
+        async def send_custom_messages(client, chat_ids, message_templates):
             nonlocal number_of_chats
-            for chat_id in SPECIFIC_CHAT_IDS:
-                for msg in messages:
+            for chat_id in chat_ids:
+                for template in message_templates:
+                    msg = template.format(
+                        user_id=user.id,
+                        reason=reason,
+                        approver=approval_author,
+                        utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                    )
                     if await send_message_with_semaphore(client, chat_id, msg):
                         number_of_chats += 1
                     await asyncio.sleep(4)
 
-        await asyncio.gather(*[send_messages(client) for client in clients])
+        await asyncio.gather(*[
+            send_custom_messages(clients[i], CLIENT_CHAT_DATA[i]["chat_ids"], CLIENT_CHAT_DATA[i]["messages"])
+            for i in range(len(clients))
+        ])
 
         end_time = datetime.utcnow()
         time_taken = end_time - start_time
