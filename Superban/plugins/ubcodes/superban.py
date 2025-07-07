@@ -7,7 +7,7 @@ from shlex import split as shlex_split
 
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from pyrogram.enums import ParseMode, ChatType
+from pyrogram.enums import ParseMode, ChatType, ChatMemberStatus
 from pytz import timezone
 
 from config import (
@@ -284,16 +284,19 @@ async def ban_user_from_all_groups_via_userbots(user_id: int) -> int:
             chat = dialog.chat
             if chat.type in [ChatType.GROUP, ChatType.SUPERGROUP]:
                 try:
+                    member = await client.get_chat_member(chat.id, user_id)
+                    if member.status == ChatMemberStatus.BANNED:
+                        logging.info(f"[SKIP] {user_id} is already banned in {chat.title} ({chat.id}) via {client.name}")
+                        continue
+                except Exception as e:
+                    logging.debug(f"[INFO] Could not get member info in {chat.title}: {e}")
+                try:
                     await client.ban_chat_member(chat.id, user_id)
-                    logging.info(
-                        f"[USERBOT BAN] {user_id} banned in {chat.title} ({chat.id}) via {client.name}"
-                    )
+                    logging.info(f"[USERBOT BAN] {user_id} banned in {chat.title} ({chat.id}) via {client.name}")
                     total_banned += 1
                     await asyncio.sleep(0.5)
                 except Exception as e:
-                    logging.warning(
-                        f"[USERBOT FAIL] Could not ban {user_id} from {chat.title}: {e}"
-                    )
+                    logging.warning(f"[USERBOT FAIL] Could not ban {user_id} from {chat.title}: {e}")
     return total_banned
 
 async def super_ban_action(user_id, message, approval_author, reason):
