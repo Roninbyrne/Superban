@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from Superban import app
+from shlex import split as shlex_split
 import asyncio
 import re
 import logging
@@ -79,13 +80,24 @@ async def super_ban(_, message):
 
     if message.reply_to_message:
         user_id = message.reply_to_message.from_user.id
-        reason = message.reply_to_message.text
+        try:
+            args = shlex_split(message.text)
+            reason = " ".join(args[1:]) if len(args) > 1 else None
+        except Exception:
+            reason = message.text.split(None, 1)[1] if len(message.text.split(None, 1)) > 1 else None
     else:
-        msg_parts = message.text.split(None, 1)
-        if len(msg_parts) > 1:
-            user_query = msg_parts[1].split()[0]
-            user_id = await get_user_id(user_query)
-            reason = " ".join(msg_parts[1].split()[1:]) if len(msg_parts[1].split()) > 1 else None
+        try:
+            args = shlex_split(message.text)
+            if len(args) > 1:
+                user_query = args[1]
+                user_id = await get_user_id(user_query)
+                reason = " ".join(args[2:]) if len(args) > 2 else None
+        except Exception:
+            msg_parts = message.text.split(None, 1)
+            if len(msg_parts) > 1:
+                user_query = msg_parts[1].split()[0]
+                user_id = await get_user_id(user_query)
+                reason = " ".join(msg_parts[1].split()[1:]) if len(msg_parts[1].split()) > 1 else None
 
     if user_id is None:
         await message.reply("Please specify a user ID, username, or reply to a message.")
