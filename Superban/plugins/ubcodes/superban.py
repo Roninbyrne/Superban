@@ -195,11 +195,18 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     cid for bot_data in CLIENT_CHAT_DATA for cid in bot_data["chat_ids"]
                     if cid in await group_log_db.distinct("_id")
                 ])
+                try:
+                    extra_bans = await ban_user_from_all_groups_via_userbots(user.id)
+                except Exception as e:
+                    logging.error(f"[EXTRA BAN ERROR] Global userbot ban failed: {e}")
+                    extra_bans = "Unknown"
+
                 complete_text = SUPERBAN_COMPLETE_TEMPLATE.format(
                     user_first=user.first_name,
                     user_id=user.id,
                     reason=reason,
                     fed_count=fed_count,
+                    extra_bans=extra_bans,
                     approval_author=approval_author,
                     utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                     time_taken="Completed",
