@@ -257,7 +257,7 @@ async def send_message_with_semaphore(client, chat_id, msg):
     async with semaphore:
         try:
             logging.info(f"[SEND] Trying to send to {chat_id}: {msg}")
-            result = await client.send_message(chat_id, msg)
+            await client.send_message(chat_id, msg)
             logging.info(f"[SUCCESS] Sent to {chat_id}")
             return True
         except Exception as e:
@@ -268,7 +268,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
     try:
         await verify_all_groups_from_db(app)
         user = await app.get_users(user_id)
-        number_of_chats = 0
+        banned_chats_set = set()
         start_time = datetime.utcnow()
 
         verified_chat_ids = set()
@@ -276,17 +276,15 @@ async def super_ban_action(user_id, message, approval_author, reason):
             verified_chat_ids.add(doc["_id"])
 
         async def send_custom_messages(client, chat_ids, message_templates, bot_index):
-            nonlocal number_of_chats
             for chat_id in chat_ids:
                 if chat_id not in verified_chat_ids:
-                    logging.warning(f"[BOT {bot_index}] Skipped invalid chat {chat_id}")
                     continue
                 try:
                     starter_msg = f"⚠️ Starting Superban on [{user.first_name}](tg://user?id={user.id}) in this chat."
                     await app.send_message(chat_id, starter_msg, parse_mode=ParseMode.MARKDOWN)
                     await asyncio.sleep(2)
-                except Exception as e:
-                    logging.warning(f"[BOT {bot_index}] Failed to send starter message to {chat_id}: {e}")
+                except Exception:
+                    pass
                 for template in message_templates:
                     try:
                         msg = template.format(
@@ -295,12 +293,11 @@ async def super_ban_action(user_id, message, approval_author, reason):
                             approver=approval_author,
                             utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
                         )
-                        logging.info(f"[BOT {bot_index}] Sending to {chat_id}: {msg}")
                         if await send_message_with_semaphore(client, chat_id, msg):
-                            number_of_chats += 1
+                            banned_chats_set.add(chat_id)
                         await asyncio.sleep(4)
-                    except Exception as e:
-                        logging.error(f"[BOT {bot_index}] Error sending to {chat_id}: {e}")
+                    except Exception:
+                        pass
 
         await asyncio.gather(*[
             send_custom_messages(
@@ -316,12 +313,13 @@ async def super_ban_action(user_id, message, approval_author, reason):
         readable_time = get_readable_time(end_time - start_time)
 
         if await group_log_db.find_one({"_id": STORAGE_CHANNEL_ID}):
-            await app.send_message(STORAGE_CHANNEL_ID,
+            await app.send_message(
+                STORAGE_CHANNEL_ID,
                 SUPERBAN_COMPLETE_TEMPLATE.format(
                     user_first=user.first_name,
                     user_id=user.id,
                     reason=reason,
-                    fed_count=number_of_chats,
+                    fed_count=len(banned_chats_set),
                     approval_author=approval_author,
                     utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
                     time_taken=readable_time,
