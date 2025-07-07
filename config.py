@@ -206,6 +206,35 @@ CLIENT_CHAT_DATA = [
 ]
 
 #--------------------------------
+CLIENT_CHAT_DATA2 = [
+    {
+        "session": String_client_1,
+        "chat_ids": [-1002746914942],
+        "messages": [
+            "/Joinfed 1111-aaaa",
+            "/fban {user_id} {reason} \n\nApproved by {approver} \nTime: {utc_time}"
+        ]
+    },
+    {
+        "session": String_client_2,
+        "chat_ids": [-1002222222222],
+        "messages": [
+            "/Joinfed 2222-bbbb",
+            "/fban {user_id} Reason: {reason} \n\nDone by {approver}"
+        ]
+    },
+    {
+        "session": String_client_3,
+        "chat_ids": [-1003333333333],
+        "messages": [
+            "/Joinfed 3333-cccc",
+            "Ban user {user_id} - Reason: {reason} - By: {approver}"
+        ]
+    },
+]
+
+#--------------------------------
+
 HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
 HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
