@@ -16,7 +16,7 @@ from config import (
     SUPERUNBAN_APPROVED_TEMPLATE,
     SUPERUNBAN_DECLINED_TEMPLATE,
     SUPERUNBAN_COMPLETE_TEMPLATE,
-    CLIENT_CHAT_DATA,
+    CLIENT_CHAT_DATA2,
     SUPERUNBAN_CHAT_ID,
     STORAGE_CHANNEL_ID,
     AUTHORS
@@ -195,7 +195,7 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
 
             try:
                 fed_count = len([
-                    cid for bot_data in CLIENT_CHAT_DATA for cid in bot_data["chat_ids"]
+                    cid for bot_data in CLIENT_CHAT_DATA2 for cid in bot_data["chat_ids"]
                     if cid in await group_log_db.distinct("_id")
                 ])
                 try:
@@ -317,8 +317,8 @@ async def super_unban_action(user_id, message, approval_author, reason):
         await asyncio.gather(*[
             send_custom_messages(
                 userbot_module.userbot_clients[i],
-                CLIENT_CHAT_DATA[i]["chat_ids"],
-                CLIENT_CHAT_DATA[i]["messages"],
+                CLIENT_CHAT_DATA2[i]["chat_ids"],
+                CLIENT_CHAT_DATA2[i]["messages"],
                 i + 1
             )
             for i in range(len(userbot_module.userbot_clients))
