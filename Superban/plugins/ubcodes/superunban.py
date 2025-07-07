@@ -264,6 +264,19 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
         logging.error(f"Unexpected error: {e}")
         await query.answer("An unexpected error occurred. Please try again.", show_alert=True)
 
+semaphore = asyncio.Semaphore(2)
+
+async def send_message_with_semaphore(client, chat_id, msg):
+    async with semaphore:
+        try:
+            logging.info(f"[SEND] Trying to send to {chat_id}: {msg}")
+            await client.send_message(chat_id, msg)
+            logging.info(f"[SUCCESS] Sent to {chat_id}")
+            return True
+        except Exception as e:
+            logging.error(f"[ERROR] send_message_with_semaphore to {chat_id}: {e}")
+            return False
+
 async def unban_user_from_all_groups_via_userbots(user_id: int) -> int:
     total_unbanned = 0
     for client in userbot_module.userbot_clients:
