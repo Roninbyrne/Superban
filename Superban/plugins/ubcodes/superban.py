@@ -44,15 +44,6 @@ async def get_user_id(user_query):
         logging.error(f"Error fetching user ID for {user_query}: {e}")
         return None
 
-async def retry_operation(func, *args, retries=1, delay=4):
-    for attempt in range(retries):
-        try:
-            return await func(*args)
-        except Exception as e:
-            logging.error(f"Error on attempt {attempt + 1}: {e}")
-            await asyncio.sleep(delay)
-    return None
-
 async def send_request_message(user, reason, action, message):
     reason_id = store_reason(reason) if reason else None
     chat_name = message.chat.title if message.chat.title else "Private Chat"
@@ -187,12 +178,9 @@ async def send_message_with_semaphore(client, chat_id, msg):
     async with semaphore:
         try:
             logging.info(f"[SEND] Trying to send to {chat_id}: {msg}")
-            result = await retry_operation(client.send_message, chat_id, msg)
-            if result:
-                logging.info(f"[SUCCESS] Sent to {chat_id}")
-            else:
-                logging.warning(f"[FAILED] Could not send to {chat_id}")
-            return result is not None
+            result = await client.send_message(chat_id, msg)
+            logging.info(f"[SUCCESS] Sent to {chat_id}")
+            return True
         except Exception as e:
             logging.error(f"[ERROR] send_message_with_semaphore to {chat_id}: {e}")
             return False
