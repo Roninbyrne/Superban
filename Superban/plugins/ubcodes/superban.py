@@ -310,21 +310,5 @@ async def super_ban_action(user_id, message, approval_author, reason):
                 )
             )
 
-        if await group_log_db.find_one({"_id": SUPERBAN_CHAT_ID}):
-            final_msg = await app.send_message(SUPERBAN_CHAT_ID,
-                SUPERBAN_COMPLETE_TEMPLATE.format(
-                    user_first=user.first_name,
-                    user_id=user.id,
-                    reason=reason,
-                    fed_count=number_of_chats,
-                    approval_author=approval_author,
-                    utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
-                    time_taken=readable_time,
-                )
-            )
-            try:
-                await final_msg.pin(disable_notification=True)
-            except Exception:
-                pass
     except Exception as e:
         logging.error(f"Error during superban action: {e}")
