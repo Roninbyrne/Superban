@@ -99,7 +99,7 @@ async def super_ban(_, message):
     await send_request_message(user, reason, "Super_Ban", message)
     utc_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
-    await message.reply(
+    await message.edit_text(
         SUPERBAN_REQUEST_RESPONSE.format(
             user_first=user.first_name,
             reason=reason if reason else "No reason provided",
@@ -107,7 +107,6 @@ async def super_ban(_, message):
             utc_time=utc_time,
         )
     )
-    await message.delete()
 
 @app.on_callback_query(filters.regex(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$'))
 async def handle_super_ban_callback(client: Client, query: CallbackQuery):
