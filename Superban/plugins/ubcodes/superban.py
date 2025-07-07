@@ -15,6 +15,7 @@ from config import (
     AUTHORS
 )
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from pyrogram.enums import ParseMode
 from pytz import timezone
 from datetime import datetime
 import base64
@@ -204,7 +205,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
                     continue
                 try:
                     starter_msg = f"⚠️ Starting Superban on [{user.first_name}](tg://user?id={user.id}) in this chat."
-                    await app.send_message(chat_id, starter_msg)
+                    await app.send_message(chat_id, starter_msg, parse_mode=ParseMode.MARKDOWN)
                     await asyncio.sleep(2)
                 except Exception as e:
                     logging.warning(f"[BOT {bot_index}] Failed to send starter message to {chat_id}: {e}")
