@@ -94,6 +94,76 @@ SUPERBAN_COMPLETE_TEMPLATE = """sᴜᴘᴇʀʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟᴇᴛ�
 ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
 
 #--------------------------------
+SUPERUNBAN_REQUEST_TEMPLATE = """ᴀᴘᴘʀᴏᴠᴇ sᴜᴘᴇʀᴜɴʙᴀɴ ꜰᴏʀ ᴜꜱᴇʀ :
+{user_first}
+ᴜꜱᴇʀ ɪᴅ : {user_id}
+
+ʀᴇQᴜᴇꜱᴛ ꜰʀᴏᴍ ᴄʜᴀᴛ ɪᴅ : {chat_id}
+ʀᴇQᴜᴇꜱᴛ ꜰʀᴏᴍ ᴄʜᴀᴛ ɴᴀᴍᴇ : {chat_name}
+
+ʀᴇᴀꜱᴏɴ : {reason}
+ʀᴇQᴜᴇꜱᴛ ʙʏ : {request_by}
+
+ᴅᴀᴛᴇ & ᴛɪᴍᴇ : {ind_time}
+ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
+
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+
+SUPERUNBAN_REQUEST_RESPONSE = """ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴇɴᴅᴇᴅ ᴛᴏ ᴛᴇᴀᴍ
+
+ʀᴇQᴜᴇꜱᴛ ᴛᴏ sᴜᴘᴇʀᴜɴʙᴀɴ
+ᴜꜱᴇʀ : {user_first}
+
+ʀᴇᴀꜱᴏɴ : {reason}
+ʀᴇQᴜᴇꜱᴛ ʙʏ : {request_by}
+
+ʏᴏᴜʀ ʀᴇQᴜᴇꜱᴛ ᴡɪʟʟ ʙᴇ ᴄʜᴇᴄᴋᴇᴅ ᴀɴᴅ ɪꜰ ɪᴛ'ꜱ ɢᴇɴᴜɪɴ ᴛʜᴇɴ ʙᴇ ꜱᴜʀᴇ ɪᴛ ᴡɪʟʟ ʙᴇ ᴀᴘᴘʀᴏᴠᴇᴅ.
+ᴛʜᴀɴᴋꜜs ꜰᴏʀ ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜᴇꜱᴛ
+
+ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @SuperbanTeam
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+
+SUPERUNBAN_APPROVED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ᴀᴘᴘʀᴏᴠᴇᴅ, ɴᴏᴡ ꜱᴛᴀʀᴛɪɴɢ sᴜᴘᴇʀᴜɴʙᴀɴ.....
+
+ʀᴇQᴜᴇꜱᴛ ᴛᴏ sᴜᴘᴇʀᴜɴʙᴀɴ
+ᴜꜱᴇʀ : {user_first}
+
+ʀᴇᴀꜱᴏɴ : {reason}
+ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ ᴀᴜᴛʜᴏʀ : {approval_author}
+
+ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+
+SUPERUNBAN_DECLINED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ᴅᴇᴄʟɪɴᴇᴅ
+
+ʀᴇQᴜᴇꜱᴛ ᴛᴏ sᴜᴘᴇʀᴜɴʙᴀɴ
+ᴜꜱᴇʀ : {user_first}
+
+ʀᴇᴀꜱᴏɴ : {reason}
+ᴅᴇᴄʟɪɴᴇᴅ ʙʏ ᴀᴜᴛʜᴏʀ : {approval_author}
+
+ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+
+SUPERUNBAN_COMPLETE_TEMPLATE = """sᴜᴘᴇʀᴜɴʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ.
+
+ᴜꜱᴇʀ : {user_first}
+ᴜꜱᴇʀ ɪᴅ : {user_id}
+
+ʀᴇᴀꜱᴏɴ : {reason}
+ᴛᴏᴛᴀʟ ᴜɴʙᴀɴ ɪɴ ꜰᴇᴅꜱ : {fed_count}
+ɢᴜɴʙᴀɴ ɪɴ : {extra_bans}
+
+ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ : {approval_author}
+
+ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
+ᴛɪᴍᴇ ᴛᴀᴋᴇɴ : {time_taken}
+
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @SuperbanTeam
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+#--------------------------------
+
 START_VIDEO = "https://i.ibb.co/nsyp67FS/Img2url-bot.jpg"
 HELP_MENU_VIDEO = "https://i.ibb.co/Z64Z3yCR/Img2url-bot.jpg"
 HELP_VIDEO_1 = "https://i.ibb.co/8gkx23jt/Img2url-bot.jpg"
