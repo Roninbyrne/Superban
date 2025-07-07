@@ -26,6 +26,7 @@ from Superban.core.chat_tracker import verify_all_groups_from_db
 
 reason_storage = {}
 next_reason_id = 1
+superban_request_messages = {}
 
 def store_reason(reason):
     global next_reason_id
@@ -99,7 +100,7 @@ async def super_ban(_, message):
     await send_request_message(user, reason, "Super_Ban", message)
     utc_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
-    await message.edit_text(
+    superban_msg = await message.edit_text(
         SUPERBAN_REQUEST_RESPONSE.format(
             user_first=user.first_name,
             reason=reason if reason else "No reason provided",
@@ -107,6 +108,7 @@ async def super_ban(_, message):
             utc_time=utc_time,
         )
     )
+    superban_request_messages[user.id] = superban_msg
 
 @app.on_callback_query(filters.regex(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$'))
 async def handle_super_ban_callback(client: Client, query: CallbackQuery):
@@ -134,6 +136,18 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
         if action == "approve":
             await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ.", show_alert=True)
             asyncio.create_task(super_ban_action(user_id, query.message, approval_author, reason))
+            if user.id in superban_request_messages:
+                try:
+                    await superban_request_messages[user.id].edit(
+                        SUPERBAN_APPROVED_TEMPLATE.format(
+                            user_first=user.first_name,
+                            reason=reason,
+                            approval_author=approval_author,
+                            utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                        )
+                    )
+                except Exception as e:
+                    logging.warning(f"Failed to edit original approval message: {e}")
             await query.message.edit(
                 SUPERBAN_APPROVED_TEMPLATE.format(
                     user_first=user.first_name,
@@ -152,6 +166,18 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
             await note.delete()
         elif action == "decline":
             await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ.", show_alert=True)
+            if user.id in superban_request_messages:
+                try:
+                    await superban_request_messages[user.id].edit(
+                        SUPERBAN_DECLINED_TEMPLATE.format(
+                            user_first=user.first_name,
+                            reason=reason,
+                            approval_author=approval_author,
+                            utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                        )
+                    )
+                except Exception as e:
+                    logging.warning(f"Failed to edit original decline message: {e}")
             await query.message.edit(
                 SUPERBAN_DECLINED_TEMPLATE.format(
                     user_first=user.first_name,
