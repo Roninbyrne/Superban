@@ -11,26 +11,26 @@ from pyrogram.enums import ParseMode, ChatType
 from pytz import timezone
 
 from config import (
-    SUPERBAN_REQUEST_TEMPLATE,
-    SUPERBAN_REQUEST_RESPONSE,
-    SUPERBAN_APPROVED_TEMPLATE,
-    SUPERBAN_DECLINED_TEMPLATE,
-    SUPERBAN_COMPLETE_TEMPLATE,
+    SUPERUNBAN_REQUEST_TEMPLATE,
+    SUPERUNBAN_REQUEST_RESPONSE,
+    SUPERUNBAN_APPROVED_TEMPLATE,
+    SUPERUNBAN_DECLINED_TEMPLATE,
+    SUPERUNBAN_COMPLETE_TEMPLATE,
     CLIENT_CHAT_DATA,
-    SUPERBAN_CHAT_ID,
+    SUPERUNBAN_CHAT_ID,
     STORAGE_CHANNEL_ID,
     AUTHORS
 )
 
-from Superban import app
-from Superban.core.mongo import group_log_db
-import Superban.core.userbot as userbot_module
-from Superban.core.readable_time import get_readable_time
-from Superban.core.chat_tracker import verify_all_groups_from_db
+from Superunban import app
+from Superunban.core.mongo import group_log_db
+import Superunban.core.userbot as userbot_module
+from Superunban.core.readable_time import get_readable_time
+from Superunban.core.chat_tracker import verify_all_groups_from_db
 
 reason_storage = {}
 next_reason_id = 1
-superban_request_messages = {}
+superunban_request_messages = {}
 
 def store_reason(reason):
     global next_reason_id
@@ -59,8 +59,8 @@ async def send_request_message(user, reason, action, message):
     encoded_reason = base64.b64encode(str(reason_id).encode()).decode() if reason_id else ""
 
     return await app.send_message(
-        SUPERBAN_CHAT_ID,
-        SUPERBAN_REQUEST_TEMPLATE.format(
+        SUPERUNBAN_CHAT_ID,
+        SUPERUNBAN_REQUEST_TEMPLATE.format(
             user_first=user.first_name,
             user_id=user.id,
             chat_id=chat_id,
@@ -131,10 +131,10 @@ async def super_unban(_, message):
     except Exception as e:
         logging.warning(f"Could not pin the message: {e}")
 
-@app.on_callback_query(filters.regex(r'^Super_Unban_(approve|decline)_(\d+)_(.+)$'))
+@app.on_callback_query(filters.regex(r'^Super_Unban_(approve|decline)(\d+)(.+)$'))
 async def handle_super_unban_callback(client: Client, query: CallbackQuery):
     try:
-        match = re.match(r'^Super_Unban_(approve|decline)_(\d+)_(.+)$', query.data)
+        match = re.match(r'^Super_Unban_(approve|decline)(\d+)(.+)$', query.data)
         if not match:
             raise ValueError("Invalid callback data format")
         action, user_id_str, encoded_reason = match.groups()
@@ -266,7 +266,7 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
 
 async def unban_user_from_all_groups_via_userbots(user_id: int) -> int:
     total_unbanned = 0
-    for client in userbot_clients:
+    for client in userbot_module.userbot_clients:
         async for dialog in client.get_dialogs():
             chat = dialog.chat
             if chat.type in [ChatType.GROUP, ChatType.SUPERGROUP]:
