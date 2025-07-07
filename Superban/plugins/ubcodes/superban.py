@@ -289,7 +289,7 @@ async def ban_user_from_all_groups_via_userbots(user_id: int) -> int:
                     logging.warning(f"[USERBOT FAIL] Could not ban {user_id} from {chat.title}: {e}")
     return total_banned
 
-async def super_ban_action(user_id, message, approval_author, reason) -> int:
+async def super_ban_action(user_id, message, approval_author, reason):
     try:
         await verify_all_groups_from_db(app)
         user = await app.get_users(user_id)
@@ -334,14 +334,31 @@ async def super_ban_action(user_id, message, approval_author, reason) -> int:
             for i in range(len(userbot_module.userbot_clients))
         ])
 
-        extra_bans = 0
+        end_time = datetime.utcnow()
+        readable_time = get_readable_time(end_time - start_time)
+
+        if await group_log_db.find_one({"_id": STORAGE_CHANNEL_ID}):
+            await app.send_message(
+                STORAGE_CHANNEL_ID,
+                SUPERBAN_COMPLETE_TEMPLATE.format(
+                    user_first=user.first_name,
+                    user_id=user.id,
+                    reason=reason,
+                    fed_count=len(banned_chats_set),
+                    approval_author=approval_author,
+                    utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    time_taken=readable_time,
+                )
+            )
+
         try:
             extra_bans = await ban_user_from_all_groups_via_userbots(user_id)
+            await app.send_message(
+                SUPERBAN_CHAT_ID,
+                f"✅ Additionally banned from {extra_bans} groups/supergroups via userbots only."
+            )
         except Exception as e:
             logging.error(f"[EXTRA BAN ERROR] Global userbot ban failed: {e}")
 
-        return extra_bans
-
     except Exception as e:
         logging.error(f"Error during superban action: {e}")
-        return 0
