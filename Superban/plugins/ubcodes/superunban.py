@@ -17,7 +17,7 @@ from config import (
     SUPERUNBAN_DECLINED_TEMPLATE,
     SUPERUNBAN_COMPLETE_TEMPLATE,
     CLIENT_CHAT_DATA2,
-    SUPERUNBAN_CHAT_ID,
+    SUPERBAN_CHAT_ID,
     STORAGE_CHANNEL_ID,
     AUTHORS
 )
@@ -28,15 +28,15 @@ import Superunban.core.userbot as userbot_module
 from Superunban.core.readable_time import get_readable_time
 from Superunban.core.chat_tracker import verify_all_groups_from_db
 
-reason_storage = {}
-next_reason_id = 1
+reason_storage2 = {}
+next_reason_id2 = 1
 superunban_request_messages = {}
 
 def store_reason(reason):
-    global next_reason_id
-    reason_id = next_reason_id
-    reason_storage[reason_id] = reason
-    next_reason_id += 1
+    global next_reason_id2
+    reason_id = next_reason_id2
+    reason_storage2[reason_id] = reason
+    next_reason_id2 += 1
     return reason_id
 
 async def get_user_id(user_query):
@@ -59,7 +59,7 @@ async def send_request_message(user, reason, action, message):
     encoded_reason = base64.b64encode(str(reason_id).encode()).decode() if reason_id else ""
 
     return await app.send_message(
-        SUPERUNBAN_CHAT_ID,
+        SUPERBAN_CHAT_ID,
         SUPERUNBAN_REQUEST_TEMPLATE.format(
             user_first=user.first_name,
             user_id=user.id,
@@ -140,7 +140,7 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
         action, user_id_str, encoded_reason = match.groups()
         user_id = int(user_id_str)
         reason_id = base64.b64decode(encoded_reason).decode()
-        reason = reason_storage.get(int(reason_id), "No reason provided")
+        reason = reason_storage2.get(int(reason_id), "No reason provided")
         user = await app.get_users(user_id)
     except Exception as e:
         logging.error(f"Callback data parsing error: {e}")
@@ -184,7 +184,7 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
             except Exception:
                 pass
 
-            note = await app.send_message(SUPERUNBAN_CHAT_ID, f"ꜱᴜᴘᴇʀᴜɴʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
+            note = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀᴜɴʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await note.delete()
 
@@ -256,7 +256,7 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
             except Exception:
                 pass
 
-            note = await app.send_message(SUPERUNBAN_CHAT_ID, f"ꜱᴜᴘᴇʀᴜɴʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
+            note = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀᴜɴʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
             await note.delete()
