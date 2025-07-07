@@ -266,7 +266,7 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
 
 async def unban_user_from_all_groups_via_userbots(user_id: int) -> int:
     total_unbanned = 0
-    for client in userbot_module.userbot_clients:
+    for client in userbot_clients:
         async for dialog in client.get_dialogs():
             chat = dialog.chat
             if chat.type in [ChatType.GROUP, ChatType.SUPERGROUP]:
