@@ -188,7 +188,10 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
             await asyncio.sleep(10)
             await note.delete()
 
+            start_time = datetime.utcnow()
             await super_ban_action(user_id, query.message, approval_author, reason)
+            end_time = datetime.utcnow()
+            readable_time = get_readable_time(end_time - start_time)
 
             try:
                 fed_count = len([
@@ -209,7 +212,7 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     extra_bans=extra_bans,
                     approval_author=approval_author,
                     utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
-                    time_taken="Completed",
+                    time_taken=readable_time,
                 )
 
                 await query.message.edit(complete_text)
