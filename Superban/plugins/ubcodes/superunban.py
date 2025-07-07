@@ -7,7 +7,7 @@ from shlex import split as shlex_split
 
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from pyrogram.enums import ParseMode, ChatType
+from pyrogram.enums import ParseMode, ChatType, ChatMemberStatus
 from pytz import timezone
 
 from config import (
@@ -284,16 +284,19 @@ async def unban_user_from_all_groups_via_userbots(user_id: int) -> int:
             chat = dialog.chat
             if chat.type in [ChatType.GROUP, ChatType.SUPERGROUP]:
                 try:
+                    member = await client.get_chat_member(chat.id, user_id)
+                    if member.status != ChatMemberStatus.BANNED:
+                        logging.info(f"[SKIP] {user_id} is not banned in {chat.title} ({chat.id}) via {client.name}")
+                        continue
+                except Exception as e:
+                    logging.debug(f"[INFO] Could not get member info in {chat.title}: {e}")
+                try:
                     await client.unban_chat_member(chat.id, user_id)
-                    logging.info(
-                        f"[USERBOT UNBAN] {user_id} unbanned in {chat.title} ({chat.id}) via {client.name}"
-                    )
+                    logging.info(f"[USERBOT UNBAN] {user_id} unbanned in {chat.title} ({chat.id}) via {client.name}")
                     total_unbanned += 1
                     await asyncio.sleep(0.5)
                 except Exception as e:
-                    logging.warning(
-                        f"[USERBOT FAIL] Could not unban {user_id} from {chat.title}: {e}"
-                    )
+                    logging.warning(f"[USERBOT FAIL] Could not unban {user_id} from {chat.title}: {e}")
     return total_unbanned
 
 async def super_unban_action(user_id, message, approval_author, reason):
