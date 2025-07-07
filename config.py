@@ -83,6 +83,7 @@ SUPERBAN_COMPLETE_TEMPLATE = """sᴜᴘᴇʀʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟᴇᴛ�
 
 ʀᴇᴀꜱᴏɴ : {reason}
 ᴛᴏᴛᴀʟ ʙᴀɴ ɪɴ ꜰᴇᴅꜱ : {fed_count}
+ɢʙᴀɴ ɪɴ : {extra_bans}
 
 ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ : {approval_author}
 
