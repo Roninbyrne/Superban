@@ -199,7 +199,7 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     user_first=user.first_name,
                     user_id=user.id,
                     reason=reason,
-                    fed_count=len(superban_action_banned),
+                    fed_count=fed_count,
                     approval_author=approval_author,
                     utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                     time_taken="Completed",
@@ -267,8 +267,6 @@ async def send_message_with_semaphore(client, chat_id, msg):
             logging.error(f"[ERROR] send_message_with_semaphore to {chat_id}: {e}")
             return False
 
-superban_action_banned = set()
-
 async def super_ban_action(user_id, message, approval_author, reason):
     try:
         await verify_all_groups_from_db(app)
@@ -285,18 +283,11 @@ async def super_ban_action(user_id, message, approval_author, reason):
                 if chat_id not in verified_chat_ids:
                     continue
                 try:
-                    await client.ban_chat_member(chat_id, user.id)
-                    banned_chats_set.add(chat_id)
-                except Exception as e:
-                    logging.warning(f"[BAN ERROR] {e}")
-
-                try:
                     starter_msg = f"⚠️ Starting Superban on [{user.first_name}](tg://user?id={user.id}) in this chat."
                     await app.send_message(chat_id, starter_msg, parse_mode=ParseMode.MARKDOWN)
                     await asyncio.sleep(2)
                 except Exception:
                     pass
-
                 for template in message_templates:
                     try:
                         msg = template.format(
@@ -305,7 +296,8 @@ async def super_ban_action(user_id, message, approval_author, reason):
                             approver=approval_author,
                             utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
                         )
-                        await send_message_with_semaphore(client, chat_id, msg)
+                        if await send_message_with_semaphore(client, chat_id, msg):
+                            banned_chats_set.add(chat_id)
                         await asyncio.sleep(4)
                     except Exception:
                         pass
@@ -322,8 +314,6 @@ async def super_ban_action(user_id, message, approval_author, reason):
 
         end_time = datetime.utcnow()
         readable_time = get_readable_time(end_time - start_time)
-        superban_action_banned.clear()
-        superban_action_banned.update(banned_chats_set)
 
         if await group_log_db.find_one({"_id": STORAGE_CHANNEL_ID}):
             await app.send_message(
