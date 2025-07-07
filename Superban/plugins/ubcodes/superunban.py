@@ -22,11 +22,11 @@ from config import (
     AUTHORS
 )
 
-from Superunban import app
-from Superunban.core.mongo import group_log_db
-import Superunban.core.userbot as userbot_module
-from Superunban.core.readable_time import get_readable_time
-from Superunban.core.chat_tracker import verify_all_groups_from_db
+from Superban import app
+from Superban.core.mongo import group_log_db
+import Superban.core.userbot as userbot_module
+from Superban.core.readable_time import get_readable_time
+from Superban.core.chat_tracker import verify_all_groups_from_db
 
 reason_storage2 = {}
 next_reason_id2 = 1
