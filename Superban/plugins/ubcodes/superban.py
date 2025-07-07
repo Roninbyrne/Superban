@@ -277,11 +277,9 @@ async def send_message_with_semaphore(client, chat_id, msg):
             logging.error(f"[ERROR] send_message_with_semaphore to {chat_id}: {e}")
             return False
 
-async def ban_user_from_all_groups_via_userbots(
-    user_id: int
-) -> int:
+async def ban_user_from_all_groups_via_userbots(user_id: int) -> int:
     total_banned = 0
-    for client in userbot_clients:
+    for client in userbot_module.userbot_clients:
         async for dialog in client.get_dialogs():
             chat = dialog.chat
             if chat.type in [ChatType.GROUP, ChatType.SUPERGROUP]:
