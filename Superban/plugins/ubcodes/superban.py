@@ -281,9 +281,9 @@ async def super_ban_action(user_id, message, approval_author, reason):
         banned_chats_set = set()
         start_time = datetime.utcnow()
 
-        verified_chat_ids = set()
-        async for doc in group_log_db.find({}):
-            verified_chat_ids.add(doc["_id"])
+        verified_chat_ids = {
+            doc["_id"] async for doc in group_log_db.find({})
+        }
 
         async def send_custom_messages(client, chat_ids, message_templates, bot_index):
             for chat_id in chat_ids:
@@ -322,6 +322,12 @@ async def super_ban_action(user_id, message, approval_author, reason):
         end_time = datetime.utcnow()
         readable_time = get_readable_time(end_time - start_time)
 
+        try:
+            extra_bans = await ban_user_from_all_groups_via_userbots(user.id)
+        except Exception as e:
+            logging.error(f"[EXTRA BAN ERROR] Global userbot ban failed: {e}")
+            extra_bans = "Unknown"
+
         if await group_log_db.find_one({"_id": STORAGE_CHANNEL_ID}):
             await app.send_message(
                 STORAGE_CHANNEL_ID,
@@ -330,6 +336,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
                     user_id=user.id,
                     reason=reason,
                     fed_count=len(banned_chats_set),
+                    extra_bans=extra_bans,
                     approval_author=approval_author,
                     utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
                     time_taken=readable_time,
