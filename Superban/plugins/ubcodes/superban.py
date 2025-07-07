@@ -186,10 +186,7 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                 )
             except Exception as e:
                 logging.warning(f"Failed to edit message to complete: {e}")
-
-            await asyncio.sleep(10)
-            await query.message.delete()
-
+                
         elif action == "decline":
             await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ.", show_alert=True)
             if user.id in superban_request_messages:
