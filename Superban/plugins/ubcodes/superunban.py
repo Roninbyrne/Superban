@@ -131,10 +131,10 @@ async def super_unban(_, message):
     except Exception as e:
         logging.warning(f"Could not pin the message: {e}")
 
-@app.on_callback_query(filters.regex(r'^Super_Unban_(approve|decline)(\d+)(.+)$'))
+@app.on_callback_query(filters.regex(r'^Super_Unban_(approve|decline)_(\d+)_(.+)$'))
 async def handle_super_unban_callback(client: Client, query: CallbackQuery):
     try:
-        match = re.match(r'^Super_Unban_(approve|decline)(\d+)(.+)$', query.data)
+        match = re.match(r'^Super_Unban_(approve|decline)_(\d+)_(.+)$', query.data)
         if not match:
             raise ValueError("Invalid callback data format")
         action, user_id_str, encoded_reason = match.groups()
