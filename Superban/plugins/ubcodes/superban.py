@@ -76,6 +76,7 @@ async def send_request_message(user, reason, action, message):
 async def super_ban(_, message):
     reason = None
     user_id = None
+
     if message.reply_to_message:
         user_id = message.reply_to_message.from_user.id
         reason = message.reply_to_message.text
@@ -109,6 +110,11 @@ async def super_ban(_, message):
         )
     )
     superban_request_messages[user.id] = superban_msg
+
+    try:
+        await superban_msg.pin(disable_notification=True)
+    except Exception as e:
+        logging.warning(f"Could not pin the message: {e}")
 
 @app.on_callback_query(filters.regex(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$'))
 async def handle_super_ban_callback(client: Client, query: CallbackQuery):
