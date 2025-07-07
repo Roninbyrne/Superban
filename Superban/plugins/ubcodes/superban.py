@@ -135,7 +135,6 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
     try:
         if action == "approve":
             await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ.", show_alert=True)
-            asyncio.create_task(super_ban_action(user_id, query.message, approval_author, reason))
             if user.id in superban_request_messages:
                 try:
                     await superban_request_messages[user.id].edit(
@@ -148,6 +147,7 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     )
                 except Exception as e:
                     logging.warning(f"Failed to edit original approval message: {e}")
+
             await query.message.edit(
                 SUPERBAN_APPROVED_TEMPLATE.format(
                     user_first=user.first_name,
@@ -156,14 +156,40 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                 )
             )
+
             try:
                 await query.message.pin(disable_notification=True)
             except Exception:
                 pass
+
             note = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
-            await query.message.delete()
             await note.delete()
+
+            await super_ban_action(user_id, query.message, approval_author, reason)
+
+            try:
+                fed_count = len([
+                    cid for bot_data in CLIENT_CHAT_DATA for cid in bot_data["chat_ids"]
+                    if cid in await group_log_db.distinct("_id")
+                ])
+                await query.message.edit(
+                    SUPERBAN_COMPLETE_TEMPLATE.format(
+                        user_first=user.first_name,
+                        user_id=user.id,
+                        reason=reason,
+                        fed_count=fed_count,
+                        approval_author=approval_author,
+                        utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                        time_taken="Completed",
+                    )
+                )
+            except Exception as e:
+                logging.warning(f"Failed to edit message to complete: {e}")
+
+            await asyncio.sleep(10)
+            await query.message.delete()
+
         elif action == "decline":
             await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ.", show_alert=True)
             if user.id in superban_request_messages:
@@ -178,6 +204,7 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     )
                 except Exception as e:
                     logging.warning(f"Failed to edit original decline message: {e}")
+
             await query.message.edit(
                 SUPERBAN_DECLINED_TEMPLATE.format(
                     user_first=user.first_name,
@@ -186,10 +213,12 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                 )
             )
+
             try:
                 await query.message.pin(disable_notification=True)
             except Exception:
                 pass
+
             note = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
