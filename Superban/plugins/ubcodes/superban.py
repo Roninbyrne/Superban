@@ -202,7 +202,7 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                     extra_bans = await ban_user_from_all_groups_via_userbots(user.id)
                 except Exception as e:
                     logging.error(f"[EXTRA BAN ERROR] Global userbot ban failed: {e}")
-                    extra_bans = "Unknown"
+                    extra_bans = "0"
 
                 complete_text = SUPERBAN_COMPLETE_TEMPLATE.format(
                     user_first=user.first_name,
@@ -329,7 +329,7 @@ async def super_ban_action(user_id, message, approval_author, reason):
             extra_bans = await ban_user_from_all_groups_via_userbots(user.id)
         except Exception as e:
             logging.error(f"[EXTRA BAN ERROR] Global userbot ban failed: {e}")
-            extra_bans = "Unknown"
+            extra_bans = "0"
 
         if await group_log_db.find_one({"_id": STORAGE_CHANNEL_ID}):
             await app.send_message(
