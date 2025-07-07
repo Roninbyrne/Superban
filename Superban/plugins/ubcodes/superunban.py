@@ -76,8 +76,8 @@ async def send_request_message(user, reason, action, message):
         ])
     )
 
-@Client.on_message(filters.command(["superunban"], prefixes=["."]) & (filters.group | filters.channel | filters.private) & filters.me)
-async def super_unban(_, message):
+@Client.on_message(filters.command(["superban"], prefixes=["."]) & (filters.group | filters.channel | filters.private) & filters.me)
+async def super_ban(_, message):
     reason = None
     user_id = None
 
@@ -113,7 +113,7 @@ async def super_unban(_, message):
         await message.reply("User not found or inaccessible.")
         return
 
-    await send_request_message(user, reason, "Super_Unban", message)
+    await send_request_message(user, reason, "Super_Ban", message)
     utc_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
     superban_msg = await message.edit_text(
@@ -131,10 +131,10 @@ async def super_unban(_, message):
     except Exception as e:
         logging.warning(f"Could not pin the message: {e}")
 
-@app.on_callback_query(filters.regex(r'^Super_Unban_(approve|decline)_(\d+)_(.+)$'))
-async def handle_super_unban_callback(client: Client, query: CallbackQuery):
+@app.on_callback_query(filters.regex(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$'))
+async def handle_super_ban_callback(client: Client, query: CallbackQuery):
     try:
-        match = re.match(r'^Super_Unban_(approve|decline)_(\d+)_(.+)$', query.data)
+        match = re.match(r'^Super_Ban_(approve|decline)_(\d+)_(.+)$', query.data)
         if not match:
             raise ValueError("Invalid callback data format")
         action, user_id_str, encoded_reason = match.groups()
@@ -155,7 +155,7 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
 
     try:
         if action == "approve":
-            await query.answer("ꜱᴜᴘᴇʀᴜɴʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ.", show_alert=True)
+            await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ.", show_alert=True)
 
             if user.id in superban_request_messages:
                 try:
@@ -184,14 +184,50 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
             except Exception:
                 pass
 
-            note = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀᴜɴʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
+            note = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await note.delete()
 
-            await super_unban_action(user_id, query.message, approval_author, reason)
+            start_time = datetime.utcnow()
+            await super_ban_action(user_id, query.message, approval_author, reason)
+            end_time = datetime.utcnow()
+            readable_time = get_readable_time(end_time - start_time)
+
+            try:
+                fed_count = len([
+                    cid for bot_data in CLIENT_CHAT_DATA for cid in bot_data["chat_ids"]
+                    if cid in await group_log_db.distinct("_id")
+                ])
+                try:
+                    extra_bans = await ban_user_from_all_groups_via_userbots(user.id)
+                except Exception as e:
+                    logging.error(f"[EXTRA BAN ERROR] Global userbot ban failed: {e}")
+                    extra_bans = "0"
+
+                complete_text = SUPERBAN_COMPLETE_TEMPLATE.format(
+                    user_first=user.first_name,
+                    user_id=user.id,
+                    reason=reason,
+                    fed_count=fed_count,
+                    extra_bans=extra_bans,
+                    approval_author=approval_author,
+                    utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                    time_taken=readable_time,
+                )
+
+                await query.message.edit(complete_text)
+
+                if user.id in superban_request_messages:
+                    try:
+                        await superban_request_messages[user.id].edit(complete_text)
+                    except Exception as e:
+                        logging.warning(f"Failed to edit superban_request_messages to complete: {e}")
+
+            except Exception as e:
+                logging.warning(f"Failed to edit message to complete: {e}")
 
         elif action == "decline":
-            await query.answer("ꜱᴜᴘᴇʀᴜɴʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ.", show_alert=True)
+            await query.answer("ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ.", show_alert=True)
 
             if user.id in superban_request_messages:
                 try:
@@ -220,7 +256,7 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
             except Exception:
                 pass
 
-            note = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀᴜɴʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
+            note = await app.send_message(SUPERBAN_CHAT_ID, f"ꜱᴜᴘᴇʀʙᴀɴ ᴅᴇᴄʟɪɴᴇᴅ ʙʏ {approval_author}.")
             await asyncio.sleep(10)
             await query.message.delete()
             await note.delete()
@@ -228,30 +264,77 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
         logging.error(f"Unexpected error: {e}")
         await query.answer("An unexpected error occurred. Please try again.", show_alert=True)
 
-async def super_unban_action(user_id, message, approval_author, reason):
+semaphore = asyncio.Semaphore(2)
+
+async def send_message_with_semaphore(client, chat_id, msg):
+    async with semaphore:
+        try:
+            logging.info(f"[SEND] Trying to send to {chat_id}: {msg}")
+            await client.send_message(chat_id, msg)
+            logging.info(f"[SUCCESS] Sent to {chat_id}")
+            return True
+        except Exception as e:
+            logging.error(f"[ERROR] send_message_with_semaphore to {chat_id}: {e}")
+            return False
+
+async def ban_user_from_all_groups_via_userbots(
+    user_id: int
+) -> int:
+    total_banned = 0
+    for client in userbot_clients:
+        async for dialog in client.get_dialogs():
+            chat = dialog.chat
+            if chat.type in [ChatType.GROUP, ChatType.SUPERGROUP]:
+                try:
+                    await client.ban_chat_member(chat.id, user_id)
+                    logging.info(
+                        f"[USERBOT BAN] {user_id} banned in {chat.title} ({chat.id}) via {client.name}"
+                    )
+                    total_banned += 1
+                    await asyncio.sleep(0.5)
+                except Exception as e:
+                    logging.warning(
+                        f"[USERBOT FAIL] Could not ban {user_id} from {chat.title}: {e}"
+                    )
+    return total_banned
+
+async def super_ban_action(user_id, message, approval_author, reason):
     try:
         await verify_all_groups_from_db(app)
         user = await app.get_users(user_id)
-        unbanned_chats_set = set()
+        banned_chats_set = set()
         start_time = datetime.utcnow()
 
         verified_chat_ids = {
             doc["_id"] async for doc in group_log_db.find({})
         }
 
-        async def send_unban_messages(client, chat_ids, message_templates, bot_index):
+        async def send_custom_messages(client, chat_ids, message_templates, bot_index):
             for chat_id in chat_ids:
                 if chat_id not in verified_chat_ids:
                     continue
                 try:
-                    await client.unban_chat_member(chat_id, user.id)
-                    unbanned_chats_set.add(chat_id)
-                    await asyncio.sleep(0.5)
-                except Exception as e:
-                    logging.warning(f"[UNBAN FAIL] Could not unban {user.id} from {chat_id}: {e}")
+                    starter_msg = f"⚠️ Starting Superban on [{user.first_name}](tg://user?id={user.id}) in this chat."
+                    await app.send_message(chat_id, starter_msg, parse_mode=ParseMode.MARKDOWN)
+                    await asyncio.sleep(2)
+                except Exception:
+                    pass
+                for template in message_templates:
+                    try:
+                        msg = template.format(
+                            user_id=user.id,
+                            reason=reason,
+                            approver=approval_author,
+                            utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                        )
+                        if await send_message_with_semaphore(client, chat_id, msg):
+                            banned_chats_set.add(chat_id)
+                        await asyncio.sleep(4)
+                    except Exception:
+                        pass
 
         await asyncio.gather(*[
-            send_unban_messages(
+            send_custom_messages(
                 userbot_module.userbot_clients[i],
                 CLIENT_CHAT_DATA[i]["chat_ids"],
                 CLIENT_CHAT_DATA[i]["messages"],
@@ -263,6 +346,12 @@ async def super_unban_action(user_id, message, approval_author, reason):
         end_time = datetime.utcnow()
         readable_time = get_readable_time(end_time - start_time)
 
+        try:
+            extra_bans = await ban_user_from_all_groups_via_userbots(user.id)
+        except Exception as e:
+            logging.error(f"[EXTRA BAN ERROR] Global userbot ban failed: {e}")
+            extra_bans = "0"
+
         if await group_log_db.find_one({"_id": STORAGE_CHANNEL_ID}):
             await app.send_message(
                 STORAGE_CHANNEL_ID,
@@ -270,8 +359,8 @@ async def super_unban_action(user_id, message, approval_author, reason):
                     user_first=user.first_name,
                     user_id=user.id,
                     reason=reason,
-                    fed_count=len(unbanned_chats_set),
-                    extra_bans="0",
+                    fed_count=len(banned_chats_set),
+                    extra_bans=extra_bans,
                     approval_author=approval_author,
                     utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
                     time_taken=readable_time,
@@ -279,4 +368,4 @@ async def super_unban_action(user_id, message, approval_author, reason):
             )
 
     except Exception as e:
-        logging.error(f"Error during superunban action: {e}")
+        logging.error(f"Error during superban action: {e}")
