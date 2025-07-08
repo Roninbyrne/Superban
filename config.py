@@ -21,7 +21,7 @@ AUTHORS = [7337748194, 7394132959]
 String_client_1 = "BQGPvYcAhUkfHf38wIvJ_KxeXhQ7McM6oBCteXPzd5DsP3qKHq4gV7WKwg-5r7j1X1Kgtzr6kVKBLRO8JW4VLXIlnKM-31qCIuC05o-rNuDnz3rXWHwPMRGMMrUlEisOAhSg6kp5-9Qa9bcAoIE3OQj3WpOTTNR57diTMojazxUc7MN2zBs8MXrQ5os9FzvKfh9Sg6TvRvvHBjLLMQn6CR8dtXXPyJI3mrTMy7GOIlUKk1eYHep_U_2jnpHFLmNEWOSdbh7F33q4wcnVVbAbf4C859f_lLOF4RgYVHdQqYoglM2tBzJs8aArcHaw5KVRu_0BqwTOSJi-y2WzVCgcXSYVA36yMgAAAAHR1tKRAA"
 String_client_2 = ""
 String_client_3 = ""
-Mustjoin = "Superbanteam"
+Mustjoin = "TeamScott"
 
 #--------------------------------
 SUPERBAN_REQUEST_TEMPLATE = """ᴀᴘᴘʀᴏᴠᴇ sᴜᴘᴇʀʙᴀɴ ꜰᴏʀ ᴜꜱᴇʀ :
@@ -37,7 +37,7 @@ SUPERBAN_REQUEST_TEMPLATE = """ᴀᴘᴘʀᴏᴠᴇ sᴜᴘᴇʀʙᴀɴ ꜰᴏʀ
 ᴅᴀᴛᴇ & ᴛɪᴍᴇ : {ind_time}
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
 
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @rScottbot"""
 
 SUPERBAN_REQUEST_RESPONSE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴇɴᴅᴇᴅ ᴛᴏ ᴛᴇᴀᴍ
 
@@ -51,8 +51,8 @@ SUPERBAN_REQUEST_RESPONSE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ
 ᴛʜᴀɴᴋꜜs ꜰᴏʀ ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ
 
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
-ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @SuperbanTeam
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @TeamScott
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @rScottbot"""
 
 SUPERBAN_APPROVED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ᴀᴘᴘʀᴏᴠᴇᴅ, ɴᴏᴡ ꜱᴛᴀʀᴛɪɴɢ sᴜᴘᴇʀʙᴀɴ.....
 
@@ -63,7 +63,7 @@ SUPERBAN_APPROVED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱ�
 ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ ᴀᴜᴛʜᴏʀ : {approval_author}
 
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @rScottbot"""
 
 SUPERBAN_DECLINED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ᴅᴇᴄʟɪɴᴇᴅ
 
@@ -74,7 +74,7 @@ SUPERBAN_DECLINED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀʙᴀɴ ʀᴇQᴜᴇꜱ�
 ᴅᴇᴄʟɪɴᴇᴅ ʙʏ ᴀᴜᴛʜᴏʀ : {approval_author}
 
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @rScottbot"""
 
 SUPERBAN_COMPLETE_TEMPLATE = """sᴜᴘᴇʀʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ.
 
@@ -90,8 +90,8 @@ SUPERBAN_COMPLETE_TEMPLATE = """sᴜᴘᴇʀʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟᴇᴛ�
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
 ᴛɪᴍᴇ ᴛᴀᴋᴇɴ : {time_taken}
 
-ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @SuperbanTeam
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @TeamScott
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @rScottbot"""
 
 #--------------------------------
 SUPERUNBAN_REQUEST_TEMPLATE = """ᴀᴘᴘʀᴏᴠᴇ sᴜᴘᴇʀᴜɴʙᴀɴ ꜰᴏʀ ᴜꜱᴇʀ :
@@ -107,7 +107,7 @@ SUPERUNBAN_REQUEST_TEMPLATE = """ᴀᴘᴘʀᴏᴠᴇ sᴜᴘᴇʀᴜɴʙᴀɴ �
 ᴅᴀᴛᴇ & ᴛɪᴍᴇ : {ind_time}
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
 
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @rScottbot"""
 
 SUPERUNBAN_REQUEST_RESPONSE = """ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ꜱᴇɴᴅᴇᴅ ᴛᴏ ᴛᴇᴀᴍ
 
@@ -121,8 +121,8 @@ SUPERUNBAN_REQUEST_RESPONSE = """ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜ�
 ᴛʜᴀɴᴋꜜs ꜰᴏʀ ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜᴇꜱᴛ
 
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
-ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @SuperbanTeam
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @TeamScott
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @rScottbot"""
 
 SUPERUNBAN_APPROVED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ᴀᴘᴘʀᴏᴠᴇᴅ, ɴᴏᴡ ꜱᴛᴀʀᴛɪɴɢ sᴜᴘᴇʀᴜɴʙᴀɴ.....
 
@@ -133,7 +133,7 @@ SUPERUNBAN_APPROVED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜ�
 ᴀᴘᴘʀᴏᴠᴇᴅ ʙʏ ᴀᴜᴛʜᴏʀ : {approval_author}
 
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @rScottbot"""
 
 SUPERUNBAN_DECLINED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜᴇꜱᴛ ʜᴀꜱ ʙᴇᴇɴ ᴅᴇᴄʟɪɴᴇᴅ
 
@@ -144,7 +144,7 @@ SUPERUNBAN_DECLINED_TEMPLATE = """ʏᴏᴜʀ sᴜᴘᴇʀᴜɴʙᴀɴ ʀᴇQᴜ�
 ᴅᴇᴄʟɪɴᴇᴅ ʙʏ ᴀᴜᴛʜᴏʀ : {approval_author}
 
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @rScottbot"""
 
 SUPERUNBAN_COMPLETE_TEMPLATE = """sᴜᴘᴇʀᴜɴʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟᴇᴛᴇᴅ.
 
@@ -160,16 +160,16 @@ SUPERUNBAN_COMPLETE_TEMPLATE = """sᴜᴘᴇʀᴜɴʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟ�
 ᴜɴɪᴠᴇʀꜱᴀʟ ᴛɪᴍᴇ : {utc_time}
 ᴛɪᴍᴇ ᴛᴀᴋᴇɴ : {time_taken}
 
-ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @SuperbanTeam
-ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
+ꜱᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ : @TeamScott
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @rScottbot"""
 #--------------------------------
 
-START_VIDEO = "https://i.ibb.co/dJMYqFpK/Img2url-bot.jpg"
-HELP_MENU_VIDEO = "https://i.ibb.co/dJMYqFpK/Img2url-bot.jpg"
+START_VIDEO = "https://i.ibb.co/nsyp67FS/Img2url-bot.jpg"
+HELP_MENU_VIDEO = "https://i.ibb.co/Z64Z3yCR/Img2url-bot.jpg"
 
 #--------------------------------
 LOGGER_ID = -1002059639505
-STATS_VIDEO = "https://i.ibb.co/dJMYqFpK/Img2url-bot.jpg"
+STATS_VIDEO = "https://i.ibb.co/tMyDNvS2/Img2url-bot.jpg"
 OWNER_ID = 7394132959
 
 #--------------------------------
@@ -234,8 +234,8 @@ HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
 HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
 #--------------------------------
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/PacificArc")
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/superbanteam")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/rscottlogs")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/TeamScott")
 
 #--------------------------------
 if SUPPORT_CHANNEL:
