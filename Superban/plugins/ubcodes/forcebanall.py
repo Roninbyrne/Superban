@@ -5,7 +5,7 @@ from pyrogram.enums import ChatMembersFilter, ChatMemberStatus
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from Superban import app
-from config import RECORD_CHAT_ID
+from config import STORAGE_CHANNEL_ID
 
 UTC = ZoneInfo("UTC")
 
@@ -62,7 +62,7 @@ async def forceban_all(client, message):
         f"Time in UTC: {utc_time}"
     )
 
-    await app.send_message(RECORD_CHAT_ID, action_details)
+    await app.send_message(STORAGE_CHANNEL_ID, action_details)
     await response_message.edit(f"Force-banned {banned_count} members" if banned_count > 0 else "No members to ban.")
     await asyncio.sleep(5)
     await response_message.delete()
