@@ -1,7 +1,7 @@
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
 
-from config import SUPPORT_CHAT, OWNER_ID, START_VIDEO, HELP_MENU_VIDEO
+from config import SUPPORT_CHAT, OWNER_ID, START_VIDEO, HELP_MENU_VIDEO, SUPPORT_CHANNEL
 from Superban import app
 from Superban.plugins.base.logging_toggle import is_logging_enabled
 from Superban.core.mongo import global_userinfo_db
@@ -41,9 +41,10 @@ async def start_pm(client, message: Message):
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton("➕ Add Me To Group ➕", url=f"https://t.me/{client.me.username}?startgroup=true")],
         [
-            InlineKeyboardButton("📚 Help", callback_data="help_menu"),
+            InlineKeyboardButton("📢 Channel", url=SUPPORT_CHANNEL),
             InlineKeyboardButton("🧑‍💻 Owner", url=f"https://t.me/{OWNER_ID}")
         ],
+        [InlineKeyboardButton("🛠 Help & Commands", callback_data="help_menu")],
         [InlineKeyboardButton("Team Superban ♥️", url=SUPPORT_CHAT)]
     ])
 
