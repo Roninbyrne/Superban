@@ -44,7 +44,7 @@ async def start_pm(client, message: Message):
             InlineKeyboardButton("📚 Help", callback_data="help_menu"),
             InlineKeyboardButton("🧑‍💻 Owner", url=f"https://t.me/{OWNER_ID}")
         ],
-        [InlineKeyboardButton("💬 Support Chat", url=SUPPORT_CHAT)]
+        [InlineKeyboardButton("Team Superban ♥️", url=SUPPORT_CHAT)]
     ])
 
     await message.reply(
