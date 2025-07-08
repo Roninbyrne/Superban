@@ -164,16 +164,12 @@ SUPERUNBAN_COMPLETE_TEMPLATE = """sᴜᴘᴇʀᴜɴʙᴀɴ ɪꜱ ᴄᴏᴍᴘʟ�
 ᴘᴏᴡᴇʀᴇᴅ ʙʏ : @SuperbanYbot"""
 #--------------------------------
 
-START_VIDEO = "https://i.ibb.co/nsyp67FS/Img2url-bot.jpg"
-HELP_MENU_VIDEO = "https://i.ibb.co/Z64Z3yCR/Img2url-bot.jpg"
-HELP_VIDEO_1 = "https://i.ibb.co/8gkx23jt/Img2url-bot.jpg"
-HELP_VIDEO_2 = "https://i.ibb.co/S7Z4fHJt/Img2url-bot.jpg"
-HELP_VIDEO_3 = "https://unitedcamps.in/Images/file_11453.jpg"
-HELP_VIDEO_4 = "https://unitedcamps.in/Images/file_11454.jpg"
+START_VIDEO = "https://i.ibb.co/dJMYqFpK/Img2url-bot.jpg"
+HELP_MENU_VIDEO = "https://i.ibb.co/dJMYqFpK/Img2url-bot.jpg"
 
 #--------------------------------
 LOGGER_ID = -1002059639505
-STATS_VIDEO = "https://unitedcamps.in/Images/file_5250.jpg"
+STATS_VIDEO = "https://i.ibb.co/dJMYqFpK/Img2url-bot.jpg"
 OWNER_ID = 7394132959
 
 #--------------------------------
@@ -239,7 +235,7 @@ HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
 #--------------------------------
 SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/PacificArc")
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/phoenixXsupport")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/superbanteam")
 
 #--------------------------------
 if SUPPORT_CHANNEL:
