@@ -3,7 +3,7 @@ from Superban import app
 from pyrogram.types import Message
 import os
 import csv
-from config import RECORD_CHAT_ID, OWNER_ID
+from config import STORAGE_CHANNEL_ID, OWNER_ID
 
 FIXED_REASON = """[𝗘𝗠𝗫]   • 00 ~ ꜱᴄᴀᴍ
 [𝗘𝗠𝗫]   • 01 ~ ꜱᴘᴀᴍ (ᴅᴍ/ᴘᴍ)
@@ -53,7 +53,7 @@ async def generate_fimport_file(client, chat_id, owner_id, user_id, user_name, u
             f"Group: {chat.title}\n"
             f"Number of members: {member_count}"
         )
-        await app.send_document(chat_id=RECORD_CHAT_ID, document=file_path, caption=caption)
+        await app.send_document(chat_id=STORAGE_CHANNEL_ID, document=file_path, caption=caption)
     except Exception as e:
         print(f"Error sending file: {e}")
     finally:
