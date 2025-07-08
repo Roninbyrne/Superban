@@ -40,7 +40,7 @@ async def start_pm(client, message: Message):
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton("➕ Add Me To Group ➕", url=f"https://t.me/{client.me.username}?startgroup=true")],
         [
-            InlineKeyboardButton("📢 Channel", url=SUPPORT_CHANNEL),
+            InlineKeyboardButton("📢 Logs", url=SUPPORT_CHANNEL),
             InlineKeyboardButton("🧑‍💻 Owner", url=f"https://t.me/{OWNER_ID}")
         ],
         [InlineKeyboardButton("🛠 Help & Commands", callback_data="help_menu")],
