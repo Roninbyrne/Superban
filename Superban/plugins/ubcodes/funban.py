@@ -3,7 +3,7 @@ from Superban import app
 from pyrogram.types import Message
 import asyncio
 from datetime import datetime
-from config import RECORD_CHAT_ID
+from config import STORAGE_CHANNEL_ID
 
 @Client.on_message(filters.command(["funban"], prefixes=["."]) & (filters.group | filters.channel | filters.private) & filters.me)
 async def funban_handler(client: Client, message: Message):
@@ -65,7 +65,7 @@ async def funban_handler(client: Client, message: Message):
         f"Reason: {reason}\n\n"
         f"Time (UTC): {utc_time}\n"
     )
-    await app.send_message(RECORD_CHAT_ID, support_message)
+    await app.send_message(STORAGE_CHANNEL_ID, support_message)
 
 async def resolve_username(client: Client, username: str):
     try:
