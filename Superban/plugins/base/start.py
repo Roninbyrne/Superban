@@ -1,12 +1,11 @@
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
 
-import config
+from config import SUPPORT_CHAT, OWNER_ID, START_VIDEO, HELP_MENU_VIDEO
 from Superban import app
 from Superban.plugins.base.logging_toggle import is_logging_enabled
 from Superban.core.mongo import global_userinfo_db
 from config import LOGGER_ID
-
 
 @app.on_message(filters.command("start") & filters.private)
 async def start_pm(client, message: Message):
@@ -32,26 +31,26 @@ async def start_pm(client, message: Message):
         )
         await client.send_message(LOGGER_ID, log_text)
 
+    bot_name = client.me.first_name
     text = (
         f"<b>нєу {user.first_name}.\n"
-        f"๏ ɪᴍ 花 子 — ᴀ ᴍᴜʟᴛɪ-ᴘʟᴀʏᴇʀ ɢᴀᴍᴇ ʙᴏᴛ ʙᴀꜱᴇᴅ ᴏɴ ᴛʜᴇ ᴄʟᴀꜱꜱɪᴄ ᴡᴇʀᴇᴡᴏʟꜰ ɢᴀᴍᴇ.\n"
+        f"๏ ɪᴍ {bot_name} — ᴀ ᴜꜱᴇʀʙᴏᴛ ᴀɴᴅ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ʙᴏᴛ.\n"
         f"๏ ᴛᴀᴘ ᴛʜᴇ ʙᴜᴛᴛᴏɴꜱ ʙᴇʟᴏᴡ ᴛᴏ ɢᴇᴛ ꜱᴛᴀʀᴛᴇᴅ ᴏʀ ꜱᴇᴇ ᴄᴏᴍᴍᴀɴᴅꜱ.</b>"
     )
 
     keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("➕ Add Me To Group ➕", url=f"https://t.me/{app.me.username}?startgroup=true")],
+        [InlineKeyboardButton("➕ Add Me To Group ➕", url=f"https://t.me/{client.me.username}?startgroup=true")],
         [
-            InlineKeyboardButton("Support Chat", url=config.SUPPORT_CHAT),
-            InlineKeyboardButton("Support Channel", url=config.SUPPORT_CHANNEL)
+            InlineKeyboardButton("📚 Help", callback_data="help_menu"),
+            InlineKeyboardButton("🧑‍💻 Owner", url=f"https://t.me/{OWNER_ID}")
         ],
-        [InlineKeyboardButton("📚 Help and Commands", callback_data="help_menu")]
+        [InlineKeyboardButton("💬 Support Chat", url=SUPPORT_CHAT)]
     ])
 
     await message.reply(
-        f"{text}\n\n<a href='{config.START_VIDEO}'>๏ ʟᴇᴛ'ꜱ ʙᴇɢɪɴ ᴛʜᴇ ʜᴜɴᴛ! 🐺</a>",
+        f"{text}\n\n<a href='{START_VIDEO}'>๏ ʟᴇᴛ'ꜱ ʙᴇɢɪɴ ᴛʜᴇ ʜᴜɴᴛ! 🐺</a>",
         reply_markup=keyboard
     )
-
 
 @app.on_callback_query(filters.regex("help_menu"))
 async def help_menu(client, callback_query: CallbackQuery):
@@ -61,10 +60,9 @@ async def help_menu(client, callback_query: CallbackQuery):
         [InlineKeyboardButton("❌ Close", callback_data="close")]
     ])
     await callback_query.message.edit_text(
-        f"<a href='{config.HELP_MENU_VIDEO}'>๏ Watch the Help Menu Video 🐺</a>\n\n📖 Choose a help topic below:",
+        f"<a href='{HELP_MENU_VIDEO}'>๏ Watch the Help Menu Video 🐺</a>\n\n📖 Choose a help topic below:",
         reply_markup=keyboard
     )
-
 
 @app.on_callback_query(filters.regex(r"help_[1-4]"))
 async def show_help_section(client, callback_query: CallbackQuery):
@@ -77,20 +75,12 @@ async def show_help_section(client, callback_query: CallbackQuery):
         "4": "📕 <b>Help Topic 4</b>\n\nAdd advanced gameplay or dev info here."
     }
 
-    help_videos = {
-        "1": config.HELP_VIDEO_1,
-        "2": config.HELP_VIDEO_2,
-        "3": config.HELP_VIDEO_3,
-        "4": config.HELP_VIDEO_4
-    }
-
     await callback_query.message.edit_text(
-        f"<a href='{help_videos[section]}'>๏ Watch Help Video 🎬</a>\n\n{help_texts[section]}",
+        help_texts[section],
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("🔙 Back", callback_data="help_menu")]
         ])
     )
-
 
 @app.on_callback_query(filters.regex("close"))
 async def close_menu(client, callback_query: CallbackQuery):
