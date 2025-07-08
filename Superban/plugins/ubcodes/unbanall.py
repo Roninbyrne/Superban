@@ -5,7 +5,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from Superban import app
 import asyncio
-from config import RECORD_CHAT_ID
+from config import STORAGE_CHANNEL_ID
 
 UTC = ZoneInfo("UTC")
 
@@ -53,7 +53,7 @@ async def unban_all(client, message):
         f"Time in UTC: {utc_time}"
     )
 
-    await app.send_message(RECORD_CHAT_ID, action_details)
+    await app.send_message(STORAGE_CHANNEL_ID, action_details)
     await response_message.edit(f"Unbanned {unbanned_count} users" if unbanned_count > 0 else "No users to unban.")
     await asyncio.sleep(5)
     await response_message.delete()
