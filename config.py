@@ -9,7 +9,7 @@ load_dotenv()
 #--------------------------------
 API_ID = 20948356
 API_HASH = "6b202043d2b3c4db3f4ebefb06f2df12"
-BOT_TOKEN = "8104180468:AAGWqz6bxxvyhMutrDk8Qd6GsINnlgPCQR0"
+BOT_TOKEN = "7964387907:AAETpSvaX6nahZ-OJFuPVne8lv9lEIpKDm4"
 MONGO_DB_URI = "mongodb+srv://Combobot:Combobot@combobot.4jbtg.mongodb.net/?retryWrites=true&w=majority&appName=Combobot"
 
 #--------------------------------
