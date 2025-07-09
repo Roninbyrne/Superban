@@ -189,21 +189,11 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
             await note.delete()
 
             start_time = datetime.utcnow()
-            await super_unban_action(user_id, query.message, approval_author, reason)
+            fed_count, extra_unbans = await super_unban_action(user_id, query.message, approval_author, reason)
             end_time = datetime.utcnow()
             readable_time = get_readable_time(end_time - start_time)
 
             try:
-                fed_count = len([
-                    cid for bot_data in CLIENT_CHAT_DATA2 for cid in bot_data["chat_ids"]
-                    if cid in await group_log_db.distinct("_id")
-                ])
-                try:
-                    extra_unbans = await unban_user_from_all_groups_via_userbots(user.id)
-                except Exception as e:
-                    logging.error(f"[EXTRA UNBAN ERROR] Global userbot unban failed: {e}")
-                    extra_unbans = "0"
-
                 complete_text = SUPERUNBAN_COMPLETE_TEMPLATE.format(
                     user_first=user.first_name,
                     user_id=user.id,
@@ -211,7 +201,7 @@ async def handle_super_unban_callback(client: Client, query: CallbackQuery):
                     fed_count=fed_count,
                     extra_bans=extra_unbans,
                     approval_author=approval_author,
-                    utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                    utc_time=end_time.strftime('%Y-%m-%d %H:%M:%S'),
                     time_taken=readable_time,
                 )
 
