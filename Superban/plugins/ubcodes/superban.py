@@ -189,32 +189,22 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
             await note.delete()
 
             start_time = datetime.utcnow()
-            await super_ban_action(user_id, query.message, approval_author, reason)
+            fed_count, extra_bans = await super_ban_action(user_id, query.message, approval_author, reason)
             end_time = datetime.utcnow()
             readable_time = get_readable_time(end_time - start_time)
 
+            complete_text = SUPERBAN_COMPLETE_TEMPLATE.format(
+                user_first=user.first_name,
+                user_id=user.id,
+                reason=reason,
+                fed_count=fed_count,
+                extra_bans=extra_bans,
+                approval_author=approval_author,
+                utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+                time_taken=readable_time,
+            )
+
             try:
-                fed_count = len([
-                    cid for bot_data in CLIENT_CHAT_DATA for cid in bot_data["chat_ids"]
-                    if cid in await group_log_db.distinct("_id")
-                ])
-                try:
-                    extra_bans = await ban_user_from_all_groups_via_userbots(user.id)
-                except Exception as e:
-                    logging.error(f"[EXTRA BAN ERROR] Global userbot ban failed: {e}")
-                    extra_bans = "0"
-
-                complete_text = SUPERBAN_COMPLETE_TEMPLATE.format(
-                    user_first=user.first_name,
-                    user_id=user.id,
-                    reason=reason,
-                    fed_count=fed_count,
-                    extra_bans=extra_bans,
-                    approval_author=approval_author,
-                    utc_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
-                    time_taken=readable_time,
-                )
-
                 await query.message.edit(complete_text)
 
                 if user.id in superban_request_messages:
@@ -222,7 +212,6 @@ async def handle_super_ban_callback(client: Client, query: CallbackQuery):
                         await superban_request_messages[user.id].edit(complete_text)
                     except Exception as e:
                         logging.warning(f"Failed to edit superban_request_messages to complete: {e}")
-
             except Exception as e:
                 logging.warning(f"Failed to edit message to complete: {e}")
 
